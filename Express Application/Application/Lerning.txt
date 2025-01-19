@@ -1,0 +1,45 @@
+if we want set any data in the application  object, so we need to use app.set() function.
+
+router doesn't have responsibility to send the response or process the request
+router only have responsibility to handle the request.
+if we want to send the response, and if we want to process the request all the responsibility doing by controller 
+
+
+Flow of express application
+request first came to view, 
+then It'll go to app.js, then route and then controller and controller run the middleware and at the end that response again go on view.
+
+
+Why we create a form ?
+when we create a form a new http object is created that'll encapsulate all the data.
+
+***Important : What is the difference between get and post request?
+get request showing on url, and post is secure
+get use for getting the data from the server and post use for send the data to the server.
+
+BY sir, 
+Whenever you want to get the data from the server you go for get request
+Whenever you want to send the data client to server use post, (data will go in request body )
+that doesn't mean we cann't send the data by using get, we can send the data to the server by using get request too but the data expose on the url
+Whenever we want to send the file by the help of form so there get request will not work there only post request will work. cause the get request data carrying
+capacity was so minimum  
+
+get is faster than post 
+get is idampotent 
+
+http request have many type : get, post, pull, delete but at the form level we can only able to use get and post 
+
+whenever user request on the route so the request first will go on middleware then middleware send the response 
+
+
+
+sequalized all the method are promise based 
+Development is very easy only two thing happen in Development first one is you need to take request from the user and process the request and at the end 
+send the response to the user user 
+
+
+what is the difference between render and redirect 
+if we use response.render so it'll go into the views and redner that page , but in place of redirect
+the redirect create a new fresh request and hit the server, basically it'll create a new request.
+
+if we want to go through the route so we'll use redirect and if we want to send the page from the view so we will use  render.

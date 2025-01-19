@@ -1,0 +1,27 @@
+<html>
+    <head>
+      <!-- We're just attaching the bootStrap file from the another file in the views module  -->
+      <%- include("__bootStrap.ejs") %>
+    </head>
+       <body>
+        <div class="d-flex justify-content-center align-items-center container-fluid" style="height:500px;">
+          <div class="form" style="width:30%; height:auto;box-shadow: 10px 10px 10px grey;">
+            <h4 class="bg-danger text-white p-2 text-center">Signin Here</h4>
+           <form method ="post" action = "/admin/sign-in">
+            <div class="form-group">  
+              <input type="name" name="name" placeholder="Enter your name" class="form-control"/>
+            </div>
+            <div class="form-group">  
+              <input type="email" name="email" placeholder="Enter email id" class="form-control"/>
+            </div>
+           <div class="form-group">  
+              <input type="password" name="password" placeholder="Enter password" class="form-control"/>
+           </div>
+           <div class="form-group">
+              <button type="submit" class="btn btn-secondary" style="width:100%">Submit</button>
+           </div>
+           </form>
+          </div>
+        </div>
+     </body>
+</html>
