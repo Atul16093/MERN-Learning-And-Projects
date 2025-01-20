@@ -1,0 +1,1 @@
+For showing the binded data we'll use curly braces.
