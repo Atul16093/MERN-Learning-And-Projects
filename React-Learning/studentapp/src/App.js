@@ -6,7 +6,8 @@ class App extends Component{
     constructor(){
       super()
       this.state = {
-         studentList: data
+         studentList: data,
+         branchList : ['IT' , 'CS' , 'ES' , 'MA']
       }
     }
     addRecord = ()=>{
@@ -14,16 +15,22 @@ class App extends Component{
         let name = this.name.value;
         let mobile = this.mobile.value;
         let grade = this.grade.value;
-        let address = this.address.value;
-        let store = {roll , name , mobile , grade , address}
+        let branch = this.branch.value
+        // let address = this.address.value;
+        let store = {roll , name , mobile , grade , branch}
         console.log(store);
         
         this.setState({studentList : [...this.state.studentList,store]});
     }
+    deleteRecord = (roll)=>{
+      let index = this.state.studentList.findIndex((student)=>{return student.roll == roll});
+        this.state.studentList.splice(index ,1);
+        this.setState({studentList : [...this.state.studentList]});
+    }
     render(){
       return <>
         <Header/>
-        <div className='container-fluid'>
+        <div className='container'>
           <div className='my-2 col-md-6'>
             <input ref = {(rollInput)=>{this.roll = rollInput}} id = "roll" type ='text' className='form-control' placeholder='Enter your roll number' />
           </div>
@@ -36,8 +43,16 @@ class App extends Component{
           <div className = 'my-2 col-md-6'>
             <input ref = {(gradeInput)=>{this.grade = gradeInput}} type = 'text' className = 'form-control' placeholder = "Enter Grade" />
           </div>
-          <div className = 'my-2 col-md-6'>
+          {/* <div className = 'my-2 col-md-6'>
             <input ref = {(address)=>{this.address = address}} type = 'text' className = 'form-control' placeholder = "Enter your Address" />
+          </div> */}
+          <div className='col-md-6'>
+          <select ref={(branchInput)=>{this.branch = branchInput}} className='form-select'>
+            <option selected>Select Branch</option>
+            {this.state.branchList.map((branch , index)=>{return  <option key ={index}>
+              {branch}
+            </option>})}
+          </select>
           </div>
         </div>
         <div className='col-md-6'>
@@ -50,7 +65,7 @@ class App extends Component{
              <th>Name</th>
              <th>Mobile</th>
              <th>Grade</th> 
-             <th>Address</th>
+             <th>Branch</th>
              <th>Delete</th>
           </thead>
              <tbody className='border '>
@@ -59,8 +74,8 @@ class App extends Component{
                 <td className='border'>{data.name}</td>
                 <td className='border'>{data.mobile}</td>
                 <td className='border'>{data.grade}</td>
-                <td className='border' >{data.address}</td>
-                <td><button className='btn btn-danger'>Delete</button></td>
+                <td className='border' >{data.branch}</td>
+                <td><button className='btn btn-danger' onClick={()=>this.deleteRecord(data.roll)}>Delete</button></td>
               </tr>})}
              </tbody>
         </table>
