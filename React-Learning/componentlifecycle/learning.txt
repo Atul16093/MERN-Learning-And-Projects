@@ -1,0 +1,79 @@
+________________________________________________________________________________________________________________________________________________________________________________________
+
+Component Lifecycle in React
+In React, the component lifecycle refers to the stages a component goes through from creation to destruction. For a class component, when we create a component, an object of that component's class is instantiated. Similarly, when the component is no longer needed, the object is destroyed. This entire process — from creation to destruction — is called the component lifecycle.
+
+Stages of the Lifecycle:
+Mounting:
+This is when the component is created and added to the UI. The process of the component becoming visible on the screen is called mounting. When the component is fully visible, we say it has been mounted.
+
+Updating:
+When a component’s state or props change, the component updates. This phase is called updating.
+
+Unmounting:
+When a component is removed from the UI, it is unmounted.
+
+Handling the Lifecycle in Class Components
+Mounting (componentDidMount):
+When a class component is mounted, we can perform specific tasks using the componentDidMount() method. For example, if we need to fetch data from an API or database — tasks that take time — we use componentDidMount(). This method ensures that the UI is loaded first, and the heavy tasks run in the background, improving the user experience.
+
+Updating (componentDidUpdate):
+If we perform an operation that causes the component to update (e.g., changing the state), we can handle this phase using the componentDidUpdate() method. This is useful for tasks that depend on the component’s updated state or props.
+  
+Unmounting (componentWillUnmount):
+Before a component is removed from the UI, we may want to perform cleanup operations, such as clearing timers or canceling API calls. This can be done using the componentWillUnmount() method.
+
+Example Use Case
+If we dynamically replace Component A with another component, Component A will go through the unmounting phase. Before it is removed, we can execute cleanup tasks using componentWillUnmount().
+
+___________________________________________________________________________________________________________________________________________________________________________________________
+
+Execution Flow in a React Application
+When we run a React application, the execution process follows these steps:
+
+index.html (Public Folder):
+The execution starts from the index.html file located in the public folder. This file contains a root <div> element where the React application is mounted.
+
+index.js (src Folder):
+From index.html, the control moves to the index.js file in the src folder. In this file, the root <div> is linked to our React application. Typically, the App component is imported and rendered inside this file.
+
+App Component Initialization:
+Inside index.js, the App component is called. If strict mode (<React.StrictMode>) is enabled, React renders the App component twice in development mode to help detect potential side effects.
+
+App Component Lifecycle:
+The following lifecycle methods are executed in this order:
+
+Constructor: Initializes the state and binds methods (if needed) for class components.
+Render: Generates the virtual DOM representation of the component.
+componentDidMount: Executes after the component is added to the DOM. This is where we typically perform tasks like fetching data or setting up subscriptions.
+
+
+__________________________________________________________________________________________________________
+
+Terminology of components
+state Less Component (Functional component)
+state full component (Class component)
+pure component 
+control component
+uncontrol component
+
+Control component : If we deal our input field data with the help of state directly so that's called control component. otherwise that component called uncontrolled component if we deal with the ref or anything else.
+
+pure components : If we want to make component by the help of class and extends the Component class so that's called unpure/regular component, if we want to make our component pure so we need to extends the pure-component class.
+
+What's the difference between pure-component or normal component ?
+
+
+
+Whenever we use multiple comonenet in react application, so there's one parent of all the component that name is App component.
+Whenever we want to pass the data from parent component to child component so there're multiple option available and the basic option is props. whenever we want to pass the data from component to component or parent to child component we should go for props.
+
+"In React, state is a built-in object used to manage dynamic data within a component. Similarly, every React component receives a built-in object called props, which is used to pass data from a parent component to a child component."
+
+
+Q.   If our parent component is rerender so child component also will we rerender ?
+answer > yes
+
+Q.   If we don't want to rereder our child component so make your childcomponent pure.
+pure-component follow some internal mechanism it compare is there any changes in the state if yes so it'll re-render the child component otherwise it'll not re-render the child component 
+
