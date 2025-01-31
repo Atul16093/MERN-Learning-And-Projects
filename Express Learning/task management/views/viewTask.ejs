@@ -1,0 +1,48 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <%- include("__bootStrap.ejs") %>
+    <style>
+      .task-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 10px 10px 20px 10px rgba(0, 0, 0, 0.2) !important;
+      }
+    </style>
+  </head>
+  <body>
+    <%- include("header.ejs")%>
+    <div class="d-flex mt-3  ">
+    <a href="/task/load-task/1" class="btn btn-outline-danger m-1" style =" width :100px">High</a>
+    <a href="/task/load-task/2" class="btn btn-outline-warning m-1" style =" width :100px">Medium</a>
+    <a href="/task/load-task/3" class="btn btn-outline-success m-1" style =" width :100px">Low</a>
+    <a href="/task/view-task" class="btn btn-outline-secondary m-1" style =" width :100px">All</a>
+    </div>
+    <div class="d-flex flex-wrap  md-2 container-fluid mt-4 p-4">
+
+      <% for(let unit of data){ %>
+      <div
+        class="task-card col-lg-4 col-md-6 col-sm-12 m-3 mb-4 md-2"
+        style="min-height: 60%; width: 30%; box-shadow: 5px 5px 5px 5px grey"
+      >
+        <div class="bg-warning text-dark text-center p-2 fw-bold">
+          <%= unit.date %>
+        </div>
+        <div class="p-3">
+          <div class="fw-bold">Task title :</div>
+          <div class="mb-2"><%= unit.task %></div>
+          <div class="text-wrap">
+            <b>Description : </b>
+            <br />
+            <span><%= unit.description %></span>
+          </div>
+        </div>
+        <a href="">
+          <button class="btn btn-danger  m-1">Delete</button>
+        </a>
+      </div>
+      <%}%>
+    </div>
+  </body>
+</html>
