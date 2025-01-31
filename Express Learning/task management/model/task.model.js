@@ -68,4 +68,38 @@ export default class task{
             })
         })
     }
+    removeTask(id){
+        return new Promise((resolve , reject)=>{
+            pool.getConnection((err , con)=>{
+                if(!err){
+                let sql = " delete from task where id = ?"
+                con.query(sql , [id] , (err , result)=>{
+                    con.release();
+                    err ? reject(err) : resolve(result);
+                });
+                
+                // con.query(sql , [this.id])
+                }else{
+                    console.log(err);
+                    
+                }
+            })
+        })
+    }
+  update(task){
+    return new Promise((resolve , reject)=>{
+        pool.getConnection((err , con)=>{
+            if(!err){
+                let sql = "UPDATE task SET task = ? , description = ? , date = ? , priority_id = ? where id = ?"
+                con.query(sql , [task.task , task.description , task.date , task.priorityId , task.id] , (err , result)=>{
+                    con.release();
+                    err ? reject(err) : resolve(result);
+                })
+            }else {
+                console.log(err);
+                
+            }
+        })
+    })
+  }
 }

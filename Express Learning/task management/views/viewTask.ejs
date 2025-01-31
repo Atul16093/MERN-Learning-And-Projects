@@ -38,9 +38,14 @@
             <span><%= unit.description %></span>
           </div>
         </div>
-        <a href="">
+        <div class="bg-dark d-flex justify-content-evenly">
+        <a onclick="return confirm('Do you wanna delete this field ')" href="/task/delete/<%= unit.id%>">
           <button class="btn btn-danger  m-1">Delete</button>
         </a>
+        <a href="/task/update/<%= unit.id%>">
+          <button class="btn btn-info  m-1">Edit</button>
+        </a>
+    </div>
       </div>
       <%}%>
     </div>

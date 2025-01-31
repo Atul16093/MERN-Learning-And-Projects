@@ -3,18 +3,75 @@ import { request, response } from "express";
 import Task from "../model/task.model.js";
 import TaskPriorty from "../model/priority.model.js";
 
-export const filterTask = async (request , response , next)=>{    // viewTask
+export const displayUpdate = async (request , response , next)=>{
+    try{
+        let id = request.params.id;
+        console.log(id);
+        let taskPriorities = await (TaskPriorty.findAll());  //priority model 
+        // console.log(taskPriorities);
+        return response.render("update.ejs" , {taskPriorities , id});
+        }catch(err){
+            console.log(err);
+        }
+}
+
+export const update = async(request , response , next)=>{
+    try{
+     let {task , description , priorityId } = request.body;
+     console.log(task , description , priorityId);
+     let status = 'Active';
+     let date = new Date();
+     date = date.getDate() + "-" + (date.getMonth()+1)+"-"+date.getFullYear();
+     let t1 = new Task();
+     let id = request.params.id;
+    //  console.log("Here's the id " , id);
+     let isUpdated = await t1.update({task , description , date , priorityId , id});
+     console.log(isUpdated);
+     return response.redirect("/task/view-task");
+    }catch(err){
+        console.log(err);
+    }
+     
+     
+}
+
+export const removeTask = async (request , response , next)=>{
+    try{
+        let id = request.params.id;
+        let took = new Task();
+        let data = await took.removeTask(id);
+        console.log(data);        
+        return response.redirect("/task/view-task");
+    }catch(err){
+        console.log(err);
+        return response.render("error.ejs");
+        
+    }
+       
+        
+}
+
+
+export const filterTask = async (request , response , next)=>{    // viewTask.ejs 
+    try{
         let id = request.params.id;
         console.log(id);
         let filterUnit = await (Task.filterData(id));
         console.log(filterUnit);
         return response.render("viewTask.ejs" , {data : filterUnit});
+    }catch(err){
+        console.log(err);
+        response.render("error.ejs")
+    }
 
 }
 
  export const header = (request , response , next)=>{
          response.render("header.ejs");
  }
+ 
+
+ //create task middleware 
  export const create = async (request , response , next)=>{
     try{
         let taskPriorities = await (TaskPriorty.findAll());  //priority model 
