@@ -26,9 +26,10 @@
         class="task-card col-lg-4 col-md-6 col-sm-12 m-3 mb-4 md-2"
         style="min-height: 60%; width: 30%; box-shadow: 5px 5px 5px 5px grey"
       >
-        <div class="bg-warning text-dark text-center p-2 fw-bold">
+        <div class="<%= unit.priority_id == 1 ? 'bg-danger' : unit.priority_id == 2 ? 'bg-warning' : unit.priority_id == 3 ? 'bg-success' : ''%> text-dark text-center p-2 fw-bold">
           <%= unit.date %>
         </div>
+
         <div class="p-3">
           <div class="fw-bold">Task title :</div>
           <div class="mb-2"><%= unit.task %></div>

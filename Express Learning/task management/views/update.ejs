@@ -12,14 +12,18 @@
     </div>
     <div class="container mt-4 p-2" style="width: 50%">
       <form action="/task/update/<%= id %>" method="post">
+        <% for(let d of data) {%>
+          <% if(id == d.id ){%>
         <div class="form-group m-2">
-            <input name = "task" class="form-control" type="text" placeholder="Enter your task title"/>
+            <input value="<%= d.task%>" name = "task" class="form-control" type="text" placeholder="Enter your task title"/>
         </div>
         <div  class="form-group m-2">
             <label for="text" class="fw-bold m-2" for="" >Enter your task Description Here...</label>
-            <textarea name="description" id = 'text' placeholder="type here...." class="form-control" type="text" >  
+            <textarea   name="description" id = 'text' placeholder="type here...." class="form-control" type="text" > <%= d.description%>
             </textarea>
         </div>
+        <%}%>
+        <%}%>
         <div class="form-group mt-4">
                 <select class="form-control" name="priorityId">
                     <option>Select task priority</option>

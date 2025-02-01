@@ -8,8 +8,9 @@ export const displayUpdate = async (request , response , next)=>{
         let id = request.params.id;
         console.log(id);
         let taskPriorities = await (TaskPriorty.findAll());  //priority model 
+        let data = await (Task.display());
         // console.log(taskPriorities);
-        return response.render("update.ejs" , {taskPriorities , id});
+        return response.render("update.ejs" , {taskPriorities , id , data});
         }catch(err){
             console.log(err);
         }
