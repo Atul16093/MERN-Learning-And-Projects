@@ -9,6 +9,9 @@ export const signInAction = (request , response , next)=>{
         let admin = new Admin(null , email , password);
         admin.authenticate()
         .then(result=>{
+                request.session.sessionId = result[0].id;
+                request.session.sessionEmail = result[0].email;
+                request.session.isLoggedIn = true;
                 console.log(result);
             return result.length ? response.render("header.ejs") : response.redirect("/admin/sign-in");
         }).catch(err=>{

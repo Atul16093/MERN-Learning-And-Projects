@@ -12,7 +12,7 @@
     </style>
   </head>
   <body>
-    <%- include("header.ejs")%>
+    <%- include("nav.ejs")%>
     <div class="d-flex mt-3  ">
     <a href="/task/load-task/1" class="btn btn-outline-danger m-1" style =" width :100px">High</a>
     <a href="/task/load-task/2" class="btn btn-outline-warning m-1" style =" width :100px">Medium</a>
@@ -24,7 +24,7 @@
       <% for(let unit of data){ %>
       <div
         class="task-card col-lg-4 col-md-6 col-sm-12 m-3 mb-4 md-2"
-        style="min-height: 60%; width: 30%; box-shadow: 5px 5px 5px 5px grey"
+        style="background-color: rgb(238, 243, 244); min-height: 60%; width: 30%; box-shadow: 5px 5px 5px 5px grey "
       >
         <div class="<%= unit.priority_id == 1 ? 'bg-danger' : unit.priority_id == 2 ? 'bg-warning' : unit.priority_id == 3 ? 'bg-success' : ''%> text-dark text-center p-2 fw-bold">
           <%= unit.date %>
