@@ -1,0 +1,27 @@
+<html>
+    <head>
+      <!-- We're just attaching the bootStrap file from the another file in the views module  -->
+      <%- include("__bootStrap.ejs") %>
+    </head>
+       <body>
+        <div class="d-flex justify-content-center align-items-center container-fluid" style="height:500px;">
+          <div class="form" style="width:30%; height:auto;box-shadow: 10px 10px 10px grey;">
+            <h4 class="bg-primary text-white p-2 text-center">Update Data</h4>
+           <form method ="post" action = "/product/update/<%= productId %>">
+            <div class="form-group">
+                <input name="title" type="text" placeholder="Enter product title" class="form-control"/>
+            </div>
+            <div class="form-group">
+                <input name="price" type="text" placeholder="Enter product price" class="form-control"/>
+                <input name="id" type="hidden" value="<%= productId %>" />
+
+            </div>
+            <div class="form-group d-flex justify-content-center">
+              <button class="btn btn-success">Update</button>
+            </div>
+           </form>
+          </div>
+        </div>
+     </body>
+</html>
+
