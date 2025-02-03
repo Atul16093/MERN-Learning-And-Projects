@@ -9,7 +9,7 @@
         background-color: #f8f9fa;
       }
       .task-form {
-        max-width: 500px;
+        max-width: 1000px;
         margin: 50px auto;
         background: white;
         padding: 25px;
@@ -58,12 +58,17 @@
         </div>
 
         <!--  Role -->
-          <div>
-            
+          <div class="mb-3">
+            <label class="fw-bold">Select Domain</label>
+            <select name="role" class="form-control " name="role" required >
+              <option disabled selected>Select domain</option>
+              <%for(let domain of getDomain){%>
+              <option value="<%= domain.roleId %>"><%= domain.role%></option>
+              <%}%>
+            </select>
           </div>
-
         <!-- Submit Button -->
-        <button type="submit" class="btn btn-success">Assign Task</button>
+        <button type="submit" class="btn btn-success">Next</button>
       </form>
     </div>
   </body>

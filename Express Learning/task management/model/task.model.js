@@ -23,6 +23,24 @@ export default class task{
             })
         })
     }
+
+    //For adding the user_id and role_Id
+    static assign(task){
+        return new Promise((resolve , reject)=>{
+            pool.getConnection((err , con)=>{
+                if(!err){
+                    let sql = "UPDATE task SET user_id = ?, roleId = ?"
+                    con.query(sql , [task.userId , task.roleId] , (err , result)=>{
+                        con.release();
+                        err ? reject(err) : resolve(result);
+                    })
+                }else {
+                    console.log(err);
+                    
+                }
+            })
+        })
+    }
     static display(){
         return new Promise((resolve , reject)=>{
             pool.getConnection((err , con)=>{
@@ -98,6 +116,21 @@ export default class task{
             }else {
                 console.log(err);
                 
+            }
+        })
+    })
+  }
+
+  // User info automode
+
+  static user(role){
+    return new Promise((resolve , reject )=>{
+        pool.getConnection((err , con)=>{
+            if(!err){
+                let sql = "select * from user as u inner join role as r on u.Role = r.roleId where u.Role = ?";
+                con.query(sql ,[role], (err , result)=>{
+                    err ? reject(err) : resolve(result);
+                })
             }
         })
     })

@@ -2,7 +2,7 @@
 import { request, response } from "express";
 import Task from "../model/task.model.js";
 import TaskPriorty from "../model/priority.model.js";
-
+import Role from "../model/role.model.js";
 export const displayUpdate = async (request , response , next)=>{
     try{
         let id = request.params.id;
@@ -77,20 +77,24 @@ export const filterTask = async (request , response , next)=>{    // viewTask.ej
     try{
         let taskPriorities = await (TaskPriorty.findAll());  //priority model 
         // console.log(taskPriorities);
-        return response.render("createTask.ejs" , {taskPriorities});
+        let domainObj = new Role();
+       let getDomain =  await domainObj.roleInfo();
+        return response.render("createTask.ejs" , {taskPriorities , getDomain });
         }catch(err){
             console.log(err);
         }
  }
  export const createAction = async (request, response , next)=>{  // task model
     try{        
-        let {task , description  , priorityId} = request.body;
-        console.log(task , description , priorityId);
+        let {task , description  , priorityId , role} = request.body;
+        console.log(task , description , priorityId ,role);
         let status = 'Active';
         let date = new Date();
         date = date.getDate() + "-" + (date.getMonth()+1)+"-"+date.getFullYear();
+        let getUsername = await (Task.user(role));
+        console.log(getUsername);
         let isCreated = await Task.create({task , description , date , priorityId});
-        return response.redirect("/task/create")
+        return response.render("username.ejs" , {getUsername});
     }catch(err){
         response.render("error.ejs")
         console.log(err);  
@@ -117,6 +121,12 @@ export const filterTask = async (request , response , next)=>{    // viewTask.ej
         //         console.log(err);
         //     }
         // })        
+ }
+
+ export const assign = async (request ,response ,next)=>{
+        let {userId , roleId } = request.body;
+        await Task.assign({userId , roleId});
+        return response.redirect("/task/create")
  }
 
  export const viewTask = async (request , response , next)=>{

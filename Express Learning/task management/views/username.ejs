@@ -1,0 +1,42 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Assign Task</title>
+    <%- include("__bootStrap.ejs") %>
+  </head>
+  <body class="bg-light">
+    <%- include("nav.ejs") %>
+
+    <div class="d-flex justify-content-center align-items-center vh-100">
+      <div class="card p-4 shadow-lg rounded" style="width: 350px;">
+        <%for(let user of getUsername){%>
+        <h4 class="text-center mb-3"><%= user.role%></h4>
+        <%}%>
+        <form action="/task/assign" method="post">
+          <div class="mb-3">
+            <label class="form-label fw-bold">Select User</label>
+            <select name = "userId" class="form-select" name="userName" required>
+              <option selected disabled>Choose Name</option>
+              <%for(let user of getUsername){%>
+                <option value="<%= user.userId%>"><%=user.Name%></option>
+                <%}%>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-bold">Select Email</label>
+            <select name="roleId" class="form-select" name="userEmail" required>
+              <option selected disabled>Choose Email</option>
+              <%for(let user of getUsername){%>
+                <option value="<%= user.roleId %>"><%=user.email%></option>
+                <%}%>
+            </select>
+          </div>
+
+          <button type="submit" class="btn btn-primary w-100">Assign Task</button>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

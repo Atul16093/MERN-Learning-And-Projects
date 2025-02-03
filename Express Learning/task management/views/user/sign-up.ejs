@@ -51,7 +51,7 @@
                 <select name="role" class="form-select" id="role" required>
                   <option selected disabled>Select your role</option>
                   <%for(let userDomain of domain) {%>
-                    <option value="<%= userDomain.role%>"><%= userDomain.role %></option>
+                    <option value="<%= userDomain.roleId%>"><%= userDomain.role %></option>
                     <%}%>
                 </select>
               </div>
