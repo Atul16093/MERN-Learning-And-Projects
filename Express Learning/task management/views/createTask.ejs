@@ -2,30 +2,68 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Assign Task</title>
     <%- include("__bootStrap.ejs") %>
+    <style>
+      body {
+        background-color: #f8f9fa;
+      }
+      .task-form {
+        max-width: 500px;
+        margin: 50px auto;
+        background: white;
+        padding: 25px;
+        border-radius: 8px;
+        box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+      }
+      .form-control {
+        border-radius: 6px;
+        padding: 10px;
+      }
+      .btn-success {
+        width: 100%;
+        font-size: 18px;
+        padding: 10px;
+        border-radius: 6px;
+      }
+    </style>
   </head>
-  <body >
+  <body>
     <%- include("nav.ejs")%>
-    <div class="container mt-4 p-2" style="width: 50%">
+
+    <div class="task-form">
+      <h3 class="text-center mb-4 fw-bold">Assign a Task</h3>
       <form action="/task/create" method="post">
-        <div class="form-group m-2">
-            <input name = "task" class="form-control" type="text" placeholder="Enter your task title"/>
+        <!-- Task Title -->
+        <div class="form-group mb-3">
+          <label class="fw-bold">Task Title</label>
+          <input name="task" class="form-control" type="text" placeholder="Enter task title" required />
         </div>
-        <div  class="form-group m-2">
-            <label class="fw-bold m-2" for="" >Enter your task Description Here...</label>
-            <textarea name="description" placeholder="type here...." class="form-control" type="text" >  
-            </textarea>
+
+        <!-- Task Description -->
+        <div class="form-group mb-3">
+          <label class="fw-bold">Task Description</label>
+          <textarea name="description" placeholder="Type here..." class="form-control" rows="4" required></textarea>
         </div>
-        <div class="form-group">
-                <select class="form-control" name="priorityId">
-                    <option>Select task priority</option>
-                    <%for(let taskPriority of taskPriorities){%>
-                       <option value="<%=taskPriority.id%>"><%=taskPriority.priority%></option>
-                    <%}%>    
-                </select>
-            </div>
-        <button type="submit" class="btn btn-success mt-3">ADD</button>
+
+        <!-- Task Priority -->
+        <div class="form-group mb-3">
+          <label class="fw-bold">Task Priority</label>
+          <select class="form-control" name="priorityId" required>
+            <option disabled selected>Select task priority</option>
+            <% for(let taskPriority of taskPriorities) { %>
+              <option value="<%=taskPriority.id%>"><%=taskPriority.priority%></option>
+            <% } %>    
+          </select>
+        </div>
+
+        <!--  Role -->
+          <div>
+            
+          </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-success">Assign Task</button>
       </form>
     </div>
   </body>

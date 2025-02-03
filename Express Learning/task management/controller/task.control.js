@@ -20,7 +20,7 @@ export const update = async(request , response , next)=>{
     try{
      let {task , description , priorityId } = request.body;
      console.log(task , description , priorityId);
-     let status = 'Active';
+     let status = 'pending';
      let date = new Date();
      date = date.getDate() + "-" + (date.getMonth()+1)+"-"+date.getFullYear();
      let t1 = new Task();

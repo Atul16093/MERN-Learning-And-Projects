@@ -2,53 +2,65 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Task Manager</title>
     <%- include("__bootStrap.ejs") %>
     <style>
+      body {
+        background-color: #f4f7fc;
+      }
+      .task-card {
+        transition: all 0.3s ease-in-out;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        background-color: #ffffff;
+      }
       .task-card:hover {
         transform: translateY(-5px);
-        box-shadow: 10px 10px 20px 10px rgba(0, 0, 0, 0.2) !important;
+        box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.2);
+      }
+      .btn-custom {
+        width: 120px;
+        font-weight: bold;
+        border-radius: 20px;
       }
     </style>
   </head>
   <body>
     <%- include("nav.ejs")%>
-    <div class="d-flex mt-3  ">
-    <a href="/task/load-task/1" class="btn btn-outline-danger m-1" style =" width :100px">High</a>
-    <a href="/task/load-task/2" class="btn btn-outline-warning m-1" style =" width :100px">Medium</a>
-    <a href="/task/load-task/3" class="btn btn-outline-success m-1" style =" width :100px">Low</a>
-    <a href="/task/view-task" class="btn btn-outline-secondary m-1" style =" width :100px">All</a>
-    </div>
-    <div class="d-flex flex-wrap  md-2 container-fluid mt-4 p-4">
 
-      <% for(let unit of data){ %>
-      <div
-        class="task-card col-lg-4 col-md-6 col-sm-12 m-3 mb-4 md-2"
-        style="background-color: rgb(238, 243, 244); min-height: 60%; width: 30%; box-shadow: 5px 5px 5px 5px grey "
-      >
-        <div class="<%= unit.priority_id == 1 ? 'bg-danger' : unit.priority_id == 2 ? 'bg-warning' : unit.priority_id == 3 ? 'bg-success' : ''%> text-dark text-center p-2 fw-bold">
+    <!-- Filter Buttons -->
+    <div class="d-flex justify-content-center gap-3 mt-4">
+      <a href="/task/load-task/1" class="btn btn-outline-danger btn-custom">High</a>
+      <a href="/task/load-task/2" class="btn btn-outline-warning btn-custom">Medium</a>
+      <a href="/task/load-task/3" class="btn btn-outline-success btn-custom">Low</a>
+      <a href="/task/view-task" class="btn btn-outline-secondary btn-custom">All</a>
+    </div>
+
+    <!-- Task Cards Container -->
+    <div class="container mt-4">
+      <div class="row g-4">
+        <% for(let unit of data){ %>
+          <div class="col-lg-4 col-md-6 col-sm-12">
+            <div class="task-card card border-0">
+              <div class="card-header text-center fw-bold  <%= unit.priority_id == 1 ? 'bg-danger' : unit.priority_id == 2 ? 'bg-warning' : unit.priority_id == 3 ? 'bg-success' : '#6c757d'%>">
           <%= unit.date %>
-        </div>
-
-        <div class="p-3">
-          <div class="fw-bold">Task title :</div>
-          <div class="mb-2"><%= unit.task %></div>
-          <div class="text-wrap">
-            <b>Description : </b>
-            <br />
-            <span><%= unit.description %></span>
+              </div>
+              <div class="card-body">
+                <h5 class="fw-bold text-primary">Task Title:</h5>
+                <p class="mb-2 text-dark"><%= unit.task %></p>
+                <h6 class="text-secondary"><b>Description:</b></h6>
+                <p class="text-muted"><%= unit.description %></p>
+              </div>
+              <div class="card-footer bg-light d-flex justify-content-between">
+                <a onclick="return confirm('Are you sure you want to delete this task?')" href="/task/delete/<%= unit.id%>" 
+                   class="btn btn-outline-danger w-50 me-2">Delete</a>
+                <a href="/task/update/<%= unit.id%>" class="btn btn-outline-primary w-50">Edit</a>
+              </div>
+            </div>
           </div>
-        </div>
-        <div class="bg-dark d-flex justify-content-evenly">
-        <a onclick="return confirm('Do you wanna delete this field ')" href="/task/delete/<%= unit.id%>">
-          <button class="btn btn-danger  m-1">Delete</button>
-        </a>
-        <a href="/task/update/<%= unit.id%>">
-          <button class="btn btn-info  m-1">Edit</button>
-        </a>
-    </div>
+        <% } %>
       </div>
-      <%}%>
     </div>
   </body>
 </html>
