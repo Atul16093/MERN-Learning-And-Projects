@@ -4,6 +4,7 @@
  import taskRouter from "./router/task.router.js"
  import session from "express-session";
  import userRouter from "./router/user.router.js";
+ import usertaskRouter from "./router/usertask.router.js"
  const app = express();
  app.set("view engine" , "ejs")
  app.use(express.static("./public"));
@@ -12,6 +13,7 @@
  app.use(session({secret:"BeliveOnYou" ,saveUninitialized : true , resave : true}));
  app.use("/admin" , adminRouter)
  app.use("/user" , userRouter);
+ app.use("/usertask" , usertaskRouter);
  app.use("/task" , taskRouter);
  app.listen(3000 , ()=>{
     console.log("Server started http://localhost:3000");

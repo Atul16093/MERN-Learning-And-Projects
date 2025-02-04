@@ -8,9 +8,9 @@
     <%- include("__bootStrap.ejs") %>
 </head>
 <body>
-   <div class = "container d-flex justify-content-center align-items-center" style="height: 100%;">
-    <div style="width: 45%; height: 50%; box-shadow: 10px 10px 10px 10px grey; position: relative;">
-        <h5 class="bg-secondary text-center p-2 fw-bold" style=" height: 40;" style="position: absolute;">Sign-in</h5>
+   <div class = " container d-flex justify-content-center align-items-center" style="height: 100%;">
+    <div class="card" style="background-color: white; width: 35%; height: 50%; box-shadow: 10px 10px 10px 10px grey; position: relative;">
+        <h4 class="m-3 text-center p-2 " style="  height: 40;" style="position: absolute;" >Sign-in</h4>
         <div class="p-4">
         <form action="/admin/sign-in" method="post">
             <div class="form-group">
@@ -19,7 +19,13 @@
             <div class="form-group mt-4">
             <input name="password" class="form-control" type="password" placeholder="Enter your password ">
         </div>
-        <button type = "submit" class="fw-bold btn btn-info mt-4 ">Submit</button>
+        <div class="d-flex justify-content-center">
+            <button type = "submit" class="fw-bold btn btn-primary w-100 mt-4">Submit</button>
+        </div>
+        <div class="mt-3 d-flex justify-content-center">
+            <span>Login as an user? <a class="text-decoration-none"  href="/user/sign-in"> USER
+            </a></span>
+        </div>
         </form>
     </div>
     </div>

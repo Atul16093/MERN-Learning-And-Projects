@@ -1,5 +1,5 @@
 import express from "express";
-import { header , create , createAction , viewTask , filterTask , removeTask , displayUpdate, update , assign} from "../controller/task.control.js";
+import { header , create , createAction , viewTask , filterTask , removeTask , displayUpdate, update , assign , completedTask} from "../controller/task.control.js";
 import { verify } from "../middleware/auth.js";
 const router  = express.Router();
 
@@ -12,4 +12,5 @@ router.get("/delete/:id" ,verify, removeTask)
 router.get("/update/:id" ,verify, displayUpdate)
 router.post("/update/:id" ,verify, update)
 router.post("/assign" , assign);
+router.get("/completed" , completedTask)
 export default router;

@@ -3,6 +3,7 @@ import { request, response } from "express";
 import Task from "../model/task.model.js";
 import TaskPriorty from "../model/priority.model.js";
 import Role from "../model/role.model.js";
+import { completeTask } from "./usertask.controller.js";
 export const displayUpdate = async (request , response , next)=>{
     try{
         let id = request.params.id;
@@ -137,4 +138,14 @@ export const filterTask = async (request , response , next)=>{    // viewTask.ej
       }catch(err){
         return response.render("error.ejs")
       }
+ }
+
+ export const completedTask = async (request , response ,next)=>{
+    try{
+        let data = await (Task.allCompleted());
+        return response.render("allCompletedTask.ejs" , {data})
+    }catch(err){
+        console.log(err);
+        
+    }
  }

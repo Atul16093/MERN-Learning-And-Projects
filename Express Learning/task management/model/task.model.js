@@ -1,5 +1,5 @@
 import pool from "../db/db.config.js";
-
+let insertedTaskId;
 export default class task{
     constructor(id , task , description , status , date , priority){
         this.id = id ;
@@ -17,6 +17,8 @@ export default class task{
                     console.log("Here your record " , add.priorityId);
                     con.query(sql , [add.task , add.description , add.date , add.priorityId] , (err , result)=>{
                         con.release();
+                         insertedTaskId = result.insertId; // Get the inserted task ID
+                        
                         err ? reject(err) : resolve(result);
                     })
                 }
@@ -29,8 +31,8 @@ export default class task{
         return new Promise((resolve , reject)=>{
             pool.getConnection((err , con)=>{
                 if(!err){
-                    let sql = "UPDATE task SET user_id = ?, roleId = ?"
-                    con.query(sql , [task.userId , task.roleId] , (err , result)=>{
+                    let sql = "UPDATE task SET user_id = ?, roleId = ? where id = ?"
+                    con.query(sql , [task.userId , task.roleId , insertedTaskId] , (err , result)=>{
                         con.release();
                         err ? reject(err) : resolve(result);
                     })
@@ -45,7 +47,7 @@ export default class task{
         return new Promise((resolve , reject)=>{
             pool.getConnection((err , con)=>{
                 if(!err){
-                    let sql = "SELECT * FROM task";
+                    let sql = "select * from task as t left join user as u on t.user_id = u.userId ";
                     con.query(sql , (err , result)=>{
                         con.release();
                         err ? reject(err) : resolve(result);
@@ -135,4 +137,22 @@ export default class task{
         })
     })
   }
+
+
+  //completed task
+  static allCompleted(){
+    return new Promise((resolve , reject)=>{
+        pool.getConnection((err , con)=>{
+            if(!err){
+                let sql = "select * from task as t inner join user as u on t.user_id = u.userId WHERE t.status = 'complete'";
+                con.query(sql , (err , result)=>{
+                    con.release();
+                    err ? reject(err) : resolve (result);
+                })
+            }else{
+                console.log(err);
+            }
+        })
+    })
+}
 }

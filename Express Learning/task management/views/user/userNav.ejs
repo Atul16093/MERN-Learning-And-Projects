@@ -5,9 +5,9 @@
     <title>Document</title>
     <%- include("__bootStrap.ejs")%>
     <style>
-      /* body{
-        background-color: rgb(94, 172, 227);
-      } */
+      body{
+        background: linear-gradient(135deg, #ffffff, #a1a1a1);
+      }
     </style>
 </head>
 <body>
@@ -23,13 +23,13 @@
                 <a class="nav-link active" aria-current="page" href="#">Home </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link active" href="#">All Tasks</a>
+                <a class="nav-link active" href="/usertask/show">Pending</a>
               </li>
-              <li class="nav-item">
+              <!-- <li class="nav-item">
                 <a class="nav-link active" href="#">Pending</a>
-              </li>
+              </li> -->
               <li class="nav-item">
-                <a class="nav-link active" href="#">Complete</a>
+                <a class="nav-link active" href="/usertask/completed">Completed</a>
               </li>
             </ul>
           </div>
