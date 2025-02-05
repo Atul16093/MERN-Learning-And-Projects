@@ -38,6 +38,8 @@ export const signUPAction = async (request , response , next)=>{
     return response.redirect("/user/sign-in");
     }catch(err){
         console.log(err);
-    }
-    
+    }  
+}
+export const logout = (request , response , next)=>{
+    return response.render("user/sign-in.ejs");
 }

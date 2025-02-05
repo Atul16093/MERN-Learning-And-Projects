@@ -4,6 +4,12 @@ export const signInPage = (request , response , next)=>{
         response.render("sign-in.ejs")
 }
 
+export const logout = (request , response , next)=>{
+        request.session.isLoggedIn = false;
+        request.session.sessionId = null;
+        request.session.sessionEmail = null;
+        return response.render("sign-in.ejs");
+}
 export const signInAction = (request , response , next)=>{
         let {email , password} = request.body;
         let admin = new Admin(null , email , password);

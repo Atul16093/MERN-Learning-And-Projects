@@ -10,9 +10,7 @@
 
     <div class="d-flex justify-content-center align-items-center vh-100">
       <div class="card p-4 shadow-lg rounded" style="width: 350px;">
-        <%for(let user of getUsername){%>
-        <h4 class="text-center mb-3"><%= user.role%></h4>
-        <%}%>
+        <h4 class="text-center mb-3">Select a Perfect User</h4>
         <form action="/task/assign" method="post">
           <div class="mb-3">
             <label class="form-label fw-bold">Select User</label>
