@@ -133,11 +133,29 @@ export default class task{
                 con.query(sql ,[role], (err , result)=>{
                     err ? reject(err) : resolve(result);
                 })
+            }else{
+                console.log(err);
             }
         })
     })
   }
 
+
+  //pending task 
+  static pending(){
+    return new Promise((resolve , reject)=>{
+        pool.getConnection((err , con)=>{
+            if(!err){
+                let sql = "SELECT * from task as t left join user as u on t.user_id = u.userId where status = 'pending'";
+                con.query(sql , (err , result)=>{
+                    err ? reject(err) : resolve(result);
+                })
+            }else{
+                console.log(err);  
+            }
+        })
+    })
+  }
 
   //completed task
   static allCompleted(){

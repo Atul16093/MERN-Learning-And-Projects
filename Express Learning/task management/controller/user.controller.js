@@ -19,14 +19,16 @@ export const signInAction = async(request , response , next)=>{
     try{
         let {useremail , userpassword} = request.body;        
         await User.authenticate({useremail , userpassword});
-        return response.render("user/userNav.ejs");
+        request.session.isLoggedIn = true;
+        request.session.useremail = useremail;
+        return response.render("user/home.ejs" );
         }catch(err){
             console.log(err);
         }
 }
 
 export const userHome = (request , response , next)=>{
-    return response.render("user/userNav.ejs");
+    return response.render("user/home.ejs");
 }
 export const signUPAction = async (request , response , next)=>{
     try{
@@ -41,5 +43,7 @@ export const signUPAction = async (request , response , next)=>{
     }  
 }
 export const logout = (request , response , next)=>{
+    request.session.isLoggedIn = false;
+    request.session.useremail = null;
     return response.render("user/sign-in.ejs");
 }

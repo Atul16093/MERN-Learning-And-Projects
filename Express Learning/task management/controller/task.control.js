@@ -17,6 +17,16 @@ export const displayUpdate = async (request , response , next)=>{
         }
 }
 
+export const pendingTask = async (request , response , next)=>{
+    try{
+        let data = await (Task.pending());
+        return response.render("pending.ejs", {data});
+    }catch(err){
+        console.log(err);
+        return response.render("error.ejs");
+    }
+}
+
 export const update = async(request , response , next)=>{
     try{
      let {task , description , priorityId } = request.body;

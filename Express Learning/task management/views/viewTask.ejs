@@ -2,7 +2,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Task Manager</title>
+    <title>View task</title>
     <%- include("__bootStrap.ejs") %>
     <style>
       body {
@@ -49,8 +49,8 @@
               <div class="card-body">
                 <h5 class="fw-bold text-primary">Task Title:</h5>
                 <p class="mb-2 text-dark"><%= unit.task %></p>
-                <h6 class="text-secondary"><b>Description:</b></h6>
-                <p class="text-muted"><%= unit.description %></p>
+                <h6 class="text-dark"><b>Description:</b></h6>
+                <p class="text-dark"><%= unit.description %></p>
                 <h6 style="font-weight: 400;"><b>Alloted User:</b></h6>
                 <p class=""><%= unit.Name%></p>
               </div>

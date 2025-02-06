@@ -2,11 +2,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home page</title>
+    <title>User Dashboard</title>
     <%- include("__bootStrap.ejs")%>
     <style>
         body {
-            background: linear-gradient(135deg, #007bff, #6610f2);
+            background: linear-gradient(135deg, #28a745, #17a2b8); /* Green-Blue gradient */
             color: white;
         }
         .hero-section {
@@ -34,23 +34,23 @@
             background: #e9ecef;
             color: #000;
         }
-        .btn-warning:hover {
-            background: #ffc107;
-            color: #000;
+        .btn-primary:hover {
+            background: #007bff;
+            color: #fff;
         }
     </style>
 </head>
 <body>
-    <%- include("nav.ejs")%>
+    <%- include("userNav.ejs")%>
 
     <!-- Hero Section -->
     <div class="hero-section">
         <div class="hero-content">
-            <h1>Welcome to Task Manager</h1>
-            <p>Organize, Prioritize, and Stay Productive!</p>
+            <h1>Welcome, to Dashboard</h1>
+            <p>Manage your tasks efficiently and stay on track.</p>
             <div class="mt-4">
-                <a href="/task/view-task" class="btn btn-light btn-lg btn-custom me-3">View Tasks</a>
-                <a href="/task/create" class="btn btn-warning btn-lg btn-custom">Assign Task</a>
+                <a href="/usertask/show" class="btn btn-light btn-lg btn-custom me-3">Pending</a>
+                <a href="/usertask/completed" class="btn btn-primary btn-lg btn-custom">Complete</a>
             </div>
         </div>
     </div>
