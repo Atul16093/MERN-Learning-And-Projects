@@ -34,8 +34,8 @@ export const userHome = (request , response , next)=>{
     return response.render("user/home.ejs");
 }
 export const signUPAction = async (request , response , next)=>{
-    const error = validationResult();
-    if(error.isEmpty()){
+    const err = validationResult(request);
+    if(err.isEmpty()){
     try{
     let {fullname , email , role , password} = request.body;
     // let saltKey = bcrypt.genSaltSync(10);
@@ -49,8 +49,8 @@ export const signUPAction = async (request , response , next)=>{
     }catch(err){
         console.log(err);
     }  
-  }else{
-    return response.status(400).json({error : "bad request" , errors: error.array()});
+  }else{    
+    return response.status(400).json({error : "bad request" , err : err.array()});
   }
 }
 export const logout = (request , response , next)=>{
