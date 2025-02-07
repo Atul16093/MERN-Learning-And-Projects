@@ -11,7 +11,7 @@
  app.use(bodyParser.urlencoded({extended : true}))
  app.use(bodyParser.json());
  app.use(session({secret:"BeliveOnYou" ,saveUninitialized : true , resave : true}));
- app.use("/admin" , adminRouter)
+  app.use("/admin" , adminRouter)
  app.use("/user" , userRouter);
  app.use("/usertask" , usertaskRouter);
  app.use("/task" , taskRouter);

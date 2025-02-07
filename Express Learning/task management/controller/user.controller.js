@@ -1,5 +1,7 @@
 import User from "../model/user.model.js";
 import Role from "../model/role.model.js";
+import bcrypt from 'bcryptjs'
+import { validationResult } from "express-validator";
 export const signUp = async (request , response, next)=>{
     try{
     let role = new Role();
@@ -17,7 +19,8 @@ export const signIn = (request , response ,next)=>{
 //sign-up action
 export const signInAction = async(request , response , next)=>{
     try{
-        let {useremail , userpassword} = request.body;        
+        let {useremail , userpassword} = request.body;
+
         await User.authenticate({useremail , userpassword});
         request.session.isLoggedIn = true;
         request.session.useremail = useremail;
@@ -31,8 +34,13 @@ export const userHome = (request , response , next)=>{
     return response.render("user/home.ejs");
 }
 export const signUPAction = async (request , response , next)=>{
+    const error = validationResult();
+    if(error.isEmpty()){
     try{
     let {fullname , email , role , password} = request.body;
+    // let saltKey = bcrypt.genSaltSync(10);
+    // password = bcrypt.hashSync(password , saltKey);
+    // console.log(password);
     console.log(fullname, email, role , password);
     
     let record = new User(null , fullname , email, role , password);
@@ -41,6 +49,9 @@ export const signUPAction = async (request , response , next)=>{
     }catch(err){
         console.log(err);
     }  
+  }else{
+    return response.status(400).json({error : "bad request" , errors: error.array()});
+  }
 }
 export const logout = (request , response , next)=>{
     request.session.isLoggedIn = false;
