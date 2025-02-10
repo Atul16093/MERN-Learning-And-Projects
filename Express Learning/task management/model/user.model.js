@@ -30,7 +30,7 @@ export default class User {
             pool.getConnection((err , con)=>{
                 if(!err){
                     let sql = "select userId from user where email = ? and password = ?";
-                    con.query(sql , [record.useremail , record.userpassword] , (err , result)=>{
+                    con.query(sql , [record.useremail , record.pass] , (err , result)=>{
                         con.release();
                         console.log(result);
                         id = result[0].userId;
@@ -45,6 +45,23 @@ export default class User {
         })
     }
 
+    //For email verfication 
+    static authenticateEmail(record){
+        return new Promise((resolve , reject)=>{
+            pool.getConnection((err , con)=>{
+                if(!err){
+                    let sql = "select * from user where email = ?";
+                    con.query(sql , [record.useremail] , (err , result)=>{
+                        con.release();                        
+                        err ? reject(err) : resolve(result);
+                    })
+                }else{
+                    console.log(err);
+                    
+                }
+            })
+        })
+    }
     // _______________________________________________________________________________________________________
     // user task methods 
     static showTask(){
