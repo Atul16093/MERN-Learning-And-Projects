@@ -1,0 +1,24 @@
+1. What is a Functional Component?
+A functional component is simply a JavaScript function that returns JSX to define the UI.
+
+2. Managing State in Functional Components
+Functional components manage state using hooks.
+The hook for managing state is useState.
+useState returns an array containing two elements:
+The state variable (e.g., counter).
+The state updater function (e.g., setCounter) used to update the state.
+
+
+Material-UI in React
+React provides a popular UI library called Material-UI (MUI) that offers pre-built components for faster development.
+Some common Material-UI components:
+Button
+Card
+Dialog
+Snackbar
+TextField
+Typography
+AppBar
+Drawer
+IconButton
+Grid
