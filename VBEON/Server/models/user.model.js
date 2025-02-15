@@ -18,7 +18,10 @@ const userSchema = new mongoose.Schema({
         type : [String],
    },
    servers : {
-        type : [String],
+        type : [{type : mongoose.Schema.Types.ObjectId , ref : "Server"}],
+   },
+   OTP : {
+        type : Number,
    }
 });
 
