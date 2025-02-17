@@ -1,5 +1,4 @@
 import jwt from "jsonwebtoken"
-
 export default class Token{
     tokenGenerate(data){
     let token = jwt.sign({data} , "secreat");

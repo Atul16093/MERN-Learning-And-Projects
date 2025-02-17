@@ -1,6 +1,5 @@
 import express from "express";
 import { register , login  , verify , forget , updatePassword} from "../controller/user.controller.js";
-// import { auth } from "../middleware/auth.js";
 import { OTPVerify } from "../middleware/otpVerification.js";
 const router = express.Router();
 
@@ -11,11 +10,16 @@ router.post("/login" ,  login)
 router.post("/register" , register);
 
 //Forget password 
-router.post("/forget" , forget , OTPVerify);
+router.post("/forget" , forget);
 
 //OTP verification 
-router.post("/otpverification" , OTPVerify);
-//Verify emailAddress
-router.post("/verification" , verify , updatePassword);
+router.post("/email-verification" , verify );
+
+//Verify user for updating Password
+router.post("/otp-update-pass" , OTPVerify);
+
+//update password /set password
+router.post("/update-password" , updatePassword);
+
 
 export default router;
