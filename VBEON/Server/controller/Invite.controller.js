@@ -5,8 +5,7 @@ export const createInvite = async (request , response , next)=>{
      try{
         const {serverId} = request.params;
         const serverStatus = await Server.findOne({_id : serverId});
-        console.log(serverStatus);
-        
+
         //Storing the invite link inside the Invite model
         if(serverStatus){
         const inviteCode = crypto.randomBytes(4).toString("hex");
