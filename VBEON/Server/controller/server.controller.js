@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import User from "../models/user.model.js";
 import Server from "../models/server.model.js";
 import Invite from "../models/Invite.model.js";
+import Channel from "../models/channel.model.js";
 export const createServer = async (request , response , next)=>{
         try{
             let {servername} = request.body;
@@ -48,11 +49,58 @@ export const joinServer = async (request , response , next)=>{
             return response.status(400).json({ message: "You are already a member of this server" });
         }
         
-       let data =  await Server.updateOne({_id : serverId} , {$push: {members : userId}});
-       console.log(data);
-       
+        await Server.updateOne({_id : serverId} , {$push: {members : userId}});
+        await User.updateOne({_id : userId} , {$push : {servers : serverId}});
         return response.status(200).json({message : "Server joined successfully"});
     }catch(error){
         return response.status(400).json({message : error.message});
     }
+}
+//For leaving the server 
+export const leave = async (request, response , next)=>{
+    try{
+        let {serverId} = request.params;
+        let tokenObj = jwt.verify(request.cookies.id , "secreat");
+        let getUserId = tokenObj.id;
+        
+        //Checking the server existence
+        let serverStatus = await Server.findOne({_id : serverId});
+        if(!serverStatus){
+            return response.status(400).json({message : "Invalid server access"})
+        }
+        if(!serverStatus.members.includes(getUserId)){
+            return response.status(400).json({message : "User not exist "});
+        }
+        
+         await Server.updateOne({_id : serverId} , {$pull : {members : getUserId}});
+         await User.updateOne({_id : getUserId} , {$pull : {servers : serverId}});
+        return response.status(200).json({message : "You left"})
+        
+    }catch(error){
+        return response.status(400).json({message : error.message});
+    }
+}
+
+//Delete Server 
+export const deleteServer = async (request , response , next)=>{
+    try{
+    let {serverId} = request.params;
+    let serverStatus = await Server.findOne({_id : serverId});
+    let tokenObj = jwt.verify(request.cookies.id , "secreat");
+    let getUserId = tokenObj.id;
+    if(!serverStatus){
+        return response.status(400).json({message : "Invalid server access"});
+    }
+    //is the server admin want to delete the server
+    if (serverStatus.owner.toString() !== getUserId) {
+        return response.status(403).json({ message: "You're not the owner of this server, cann't delete it" });
+    }
+    await Channel.deleteMany({serverId : serverId});
+    await User.updateMany({servers : serverId} , {$pull : {servers : serverId}} )
+    await Server.deleteOne({_id : serverId} );
+    return response.status(200).json({message : "Server and all associated channels deleted successfully"});
+    }catch(error){
+        return response.status(500).json({message : error.message});
+    }
+    
 }
