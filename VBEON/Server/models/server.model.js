@@ -4,6 +4,7 @@ const serverSchema = new mongoose.Schema({
     servername: {
         type: String,
         required: true,
+        unique : true,
         trim: true
     },
     owner: {
@@ -19,8 +20,8 @@ const serverSchema = new mongoose.Schema({
     ],
     channels: [
         {
-            type: mongoose.Schema.Types.ObjectId, // 
-            ref: "channel" // 
+            type: mongoose.Schema.Types.ObjectId, 
+            ref: "channel",
         }
     ],
     inviteLinks: [

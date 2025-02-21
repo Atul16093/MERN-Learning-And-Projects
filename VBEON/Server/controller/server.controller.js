@@ -9,7 +9,10 @@ export const createServer = async (request , response , next)=>{
              //Find the user who's creating a server
              let getUserId = jwt.verify(request.cookies.id , "secreat");
             //  console.log(getUserId.id);
-
+            let serverStatus = await Server.findOne({servername});
+            if(serverStatus){
+                return response.status(400).json({message : "Server name already exist"});
+            }
             //First verify the user by there id,
             const user = await User.findById(getUserId.id);
             if(user){
@@ -103,4 +106,45 @@ export const deleteServer = async (request , response , next)=>{
         return response.status(500).json({message : error.message});
     }
     
+}
+
+export const updateServerName = async (request , response , next)=>{
+    try{
+        let {serverId} = request.params;
+        let {updatedName} = request.body;
+        //checking the status of the channel 
+        if(updatedName){
+        let serverStatus = await Server.findOne({_id : serverId});
+        if(!serverStatus){
+            return response.status(400).json({message : "server not exist"})
+        }
+        let serverName = await Server.findOne({$and : [{_id : serverId} , {servername : updatedName}]});
+        if(serverName){
+            return response.status(400).json({message : "Server name already exist"});
+        }
+        await Server.updateOne({_id : serverId} , {$set : {servername : updatedName}});
+        return response.status(201).json({message : "server name updated successfully"});
+    }else{
+        return response.status(400).json({message : "Give a new name"});
+    }
+    }catch(error){
+        return response.status(500).json({message : error.message});
+    }
+}
+
+//get Member details
+export const getServerDetail = async(request , response , next)=>{
+    try{
+        let {serverId} = request.params;
+        console.log(serverId);
+        
+        let serverInfo = await Server.findOne({_id : serverId})
+        if(!serverInfo){
+            return response.status(400).json({message : "Server not found"});
+        }
+        return response.status(200).json({message : "Success" , serverInfo} );
+    }catch(err){
+        console.log("Error in members controller " , err);
+        return response.status(500).json({ message: "Internal server error" });
+    }
 }

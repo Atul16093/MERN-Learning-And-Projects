@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema({
         type : [String],
    },
    servers : {
-        type : [{type : mongoose.Schema.Types.ObjectId , ref : "Server"}],
+        type : [{type : mongoose.Schema.Types.ObjectId , ref : "Server" , unique : true }],
    },
    OTP : {
         type : Number,

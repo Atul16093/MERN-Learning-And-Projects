@@ -1,6 +1,6 @@
 import express from "express";
 import {auth} from "../middleware/auth.js"
-import { createServer , joinServer , leave , deleteServer} from "../controller/server.controller.js";
+import { createServer , joinServer , leave , deleteServer , updateServerName , getServerDetail} from "../controller/server.controller.js";
 import { createInvite } from "../controller/Invite.controller.js";
 const router = express.Router();
 
@@ -14,8 +14,14 @@ router.post("/:serverId/invite" , createInvite);
 router.post("/invite/:inviteCode" , joinServer);
 
 //Leave server
-router.post("/:serverId/leave" , leave)
+router.delete("/:serverId/leave" , leave)
 
 //Delete Server 
-router.post("/:serverId" , deleteServer);
+router.delete("/:serverId" , deleteServer);
+
+//Update server name 
+router.put("/:serverId/usn" , updateServerName);
+
+//Member detail
+router.get("/:serverId" , getServerDetail);
 export default router;

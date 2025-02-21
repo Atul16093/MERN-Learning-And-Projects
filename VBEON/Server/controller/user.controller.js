@@ -8,12 +8,16 @@ import Templete from "../utils/templete.js";
 //importing a JWT token class
 import JwtToken from "../utils/JwtToken.js";
 import jwt from "jsonwebtoken";
+
 //signup controller
 export const register = async (request, response, next) => {
   try {
     let { username, email, password } = request.body;
     // console.log(username , email, password);
-
+    let emailStatus = await User.findOne({email});
+    if(emailStatus){
+      return response.status(400).json({message : "User alredy exist"});
+    }
     //Ecrypting the password
     let saltKey = bcrypt.genSaltSync(10);
     password = bcrypt.hashSync(password, saltKey);
@@ -45,8 +49,8 @@ export const register = async (request, response, next) => {
 
     response.status(201).json({ message: "User registered successfully!" });
   } catch (error) {
-    // console.log(error);
-    response.status(400).json({ error: error.message });
+    console.log("error in register controller", error);
+    response.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -70,14 +74,16 @@ export const login = async (request, response, next) => {
         let info = token.idToken(id);
         response.cookie("id", info);
         return response.status(200).json({ message: "Login successfully " });
-      }else{
-        return response.status(400).json({message : "Invalid credintial" })
-    }
-    }else{
-        return response.status(400).json({message : "Invalid credintial"  })
+      } else {
+        return response.status(400).json({ message: "Invalid credintial" });
+      }
+    } else {
+      return response.status(400).json({ message: "Invalid credintial" });
     }
   } catch (error) {
-    return response.status(400).json({ error: error.message });
+    console.log("error in login controller", error);
+
+    return response.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -94,18 +100,18 @@ export const verify = async (request, response, next) => {
     if (status) {
       //Updating the status value null
       await User.updateOne({ email: status.email }, { $set: { OTP: null } });
-      return response
-        .status(200)
-        .json({
-          message: "User register successfully (redirect to the login page )",
-        });
+      return response.status(200).json({
+        message: "User register successfully (redirect to the login page )",
+      });
     } else {
       return response
         .status(400)
         .json({ message: "Incorrect OTP Register Again" });
     }
   } catch (error) {
-    return response.status(400).json({ message: error.message });
+    console.log("Error in verfiy controller", error);
+
+    return response.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -141,7 +147,8 @@ export const forget = async (request, response, next) => {
       return response.status(200).json({ message: "OTP sent successfully" });
     }
   } catch (error) {
-    return response.status(400).json({ message: "Unathorized user  " });
+    console.log("Error in forget controller", error);
+    return response.status(500).json({ message: "Internal server error  " });
   }
 };
 
@@ -149,18 +156,39 @@ export const forget = async (request, response, next) => {
 export const updatePassword = async (request, response, next) => {
   try {
     //Now here a passoword updation window will open
-    const {newPassword } = request.body;
-    let email = jwt.verify(request.cookies.emailToken , "secreat")
-    let status  = await User.findOne({email : email.data});
-    if(status){
-        let salt = bcrypt.genSaltSync(10);
-        let encrypted = bcrypt.hashSync(newPassword , salt);
-        await User.updateOne({_id : status._id} , {$set : {password : encrypted}});
-        return response.status(201).json({ message: "Password updated succesfully " });
-    }else{
-        return response.status(400).josn({message : error.message});
+    const { newPassword } = request.body;
+    let email = jwt.verify(request.cookies.emailToken, "secreat");
+    let status = await User.findOne({ email: email.data });
+    if (status) {
+      let salt = bcrypt.genSaltSync(10);
+      let encrypted = bcrypt.hashSync(newPassword, salt);
+      await User.updateOne(
+        { _id: status._id },
+        { $set: { password: encrypted } }
+      );
+      return response
+        .status(201)
+        .json({ message: "Password updated succesfully " });
+    } else {
+      return response.status(400).josn({ message: error.message });
     }
   } catch (error) {
-    return response.status(400).json({ message: error.message });
+    console.log("Error in reset password ", error);
+    return response.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const getDetail = async (request, response, next) => {
+  try {
+    let { id } = request.params;
+    let detail = await User.findOne({ _id: id });
+
+    if (!detail) {
+      return response.status(400).json({ message: "User not found" });
+    }
+    return response.status(200).json({ message: "Successfull", detail });
+  } catch (error) {
+    console.log("error in getDetail controller", error);
+    return response.status(500).json({ message: "Internal server error" });
   }
 };
