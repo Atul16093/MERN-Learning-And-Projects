@@ -3,26 +3,32 @@ import User from "../models/user.model.js";
 import Server from "../models/server.model.js";
 import Invite from "../models/Invite.model.js";
 import Channel from "../models/channel.model.js";
+import mongoose from "mongoose";
+import { validationResult } from "express-validator";
 export const createServer = async (request , response , next)=>{
         try{
+            let errors = validationResult(request);
+            if(!errors.isEmpty()){
+                return response.status(400).json({error : errors.array()});
+            }
             let {servername} = request.body;
              //Find the user who's creating a server
              let getUserId = jwt.verify(request.cookies.id , "secreat");
             //  console.log(getUserId.id);
             let serverStatus = await Server.findOne({servername});
             if(serverStatus){
-                return response.status(400).json({message : "Server name already exist"});
+                return response.status(409).json({message : "Server name already exist"});
             }
             //First verify the user by there id,
             const user = await User.findById(getUserId.id);
             if(user){
                let serverStatus =  await Server.create({servername , owner : getUserId.id });
-
+               await Server.updateOne({_id : serverStatus._id} , {$push : {members : {user : getUserId.id , role : "admin"}}});
                //Updating the servers key in the user collection , 
                 await User.updateOne({_id : getUserId.id},{$push : {servers : serverStatus._id}});
                 return response.status(201).json({message : "Server created successfully"});
             }else{
-                return response.status(400).json({message : error.message});
+                return response.status(401).json({message : "Invalid server name"});
             }
         }catch(error){
             // console.log(error);
@@ -48,11 +54,12 @@ export const joinServer = async (request , response , next)=>{
         if(!serverStatus){
             return response.status(400).json({message : "Server not found "});
         }
-        if (serverStatus.members.includes(userId)) {
+       // Convert userId (string) to ObjectId before comparing, as MongoDB stores IDs as ObjectId 
+        if (serverStatus.members.some(member => member.user.equals(new mongoose.Types.ObjectId(getUserId)))){
             return response.status(400).json({ message: "You are already a member of this server" });
         }
         
-        await Server.updateOne({_id : serverId} , {$push: {members : userId}});
+        await Server.updateOne({_id : serverId} , {$push: {members : {user : userId , role : "member"}}});
         await User.updateOne({_id : userId} , {$push : {servers : serverId}});
         return response.status(200).json({message : "Server joined successfully"});
     }catch(error){
@@ -67,15 +74,24 @@ export const leave = async (request, response , next)=>{
         let getUserId = tokenObj.id;
         
         //Checking the server existence
-        let serverStatus = await Server.findOne({_id : serverId});
+        let serverStatus = await Server.findOne({_id : serverId}); 
+        // let role = serverStatus.members[0].role;
+
         if(!serverStatus){
             return response.status(400).json({message : "Invalid server access"})
         }
-        if(!serverStatus.members.includes(getUserId)){
+        
+        if(!serverStatus.members.some(member => member.user.equals(new mongoose.Types.ObjectId(getUserId)))){
             return response.status(400).json({message : "User not exist "});
         }
+
+        //Get the role of the user it's exist inside an array object so we need to iterate that.
+        let roleStatus = serverStatus.members.find(member =>{return member.user.equals(new mongoose.Types.ObjectId(getUserId))});
+        let role = roleStatus ? roleStatus.role : "";
         
-         await Server.updateOne({_id : serverId} , {$pull : {members : getUserId}});
+         let result = await Server.updateOne({_id : serverId} , {$pull : {members :{user : new mongoose.Types.ObjectId(getUserId) , role : role}}});
+         console.log(result);
+         
          await User.updateOne({_id : getUserId} , {$pull : {servers : serverId}});
         return response.status(200).json({message : "You left"})
         
@@ -111,22 +127,30 @@ export const deleteServer = async (request , response , next)=>{
 export const updateServerName = async (request , response , next)=>{
     try{
         let {serverId} = request.params;
-        let {updatedName} = request.body;
+        let {updatedname} = request.body;
         //checking the status of the channel 
-        if(updatedName){
+        let adminId = jwt.verify(request.cookies.id , "secreat");
+
         let serverStatus = await Server.findOne({_id : serverId});
+
         if(!serverStatus){
-            return response.status(400).json({message : "server not exist"})
+            return response.status(404).json({message : "server not exist"})
         }
-        let serverName = await Server.findOne({$and : [{_id : serverId} , {servername : updatedName}]});
+        
+        let serverName = await Server.findOne({$and : [{_id : serverId} , {servername : updatedname}]});
+
         if(serverName){
-            return response.status(400).json({message : "Server name already exist"});
+            return response.status(409).json({message : "Server name already exist"});
         }
-        await Server.updateOne({_id : serverId} , {$set : {servername : updatedName}});
+
+        if(serverStatus.owner.toString() !== adminId.id){
+            return response.status(403).json({ message: "You're not the owner of this server, cann't update the name" });
+        }
+
+
+        await Server.updateOne({_id : serverId} , {$set : {servername : updatedname}});
         return response.status(201).json({message : "server name updated successfully"});
-    }else{
-        return response.status(400).json({message : "Give a new name"});
-    }
+
     }catch(error){
         return response.status(500).json({message : error.message});
     }

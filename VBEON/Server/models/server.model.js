@@ -3,25 +3,30 @@ import mongoose from "mongoose";
 const serverSchema = new mongoose.Schema({
     servername: {
         type: String,
-        required: true,
         unique : true,
         trim: true
     },
     owner: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "user", // Must match the User model name
-        required: true
+        ref: "User", // Must match the User model name
     },
     members: [
         {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "user"
-        }
+           user :{ 
+                   type: mongoose.Schema.Types.ObjectId,
+                   ref: "User"
+           },
+           role : {
+                   type : String,
+                   enum : ["admin" , "moderator", "member"],
+                   default : "member"
+           }
+        },
     ],
     channels: [
         {
             type: mongoose.Schema.Types.ObjectId, 
-            ref: "channel",
+            ref: "Channel",
         }
     ],
     inviteLinks: [
@@ -36,33 +41,6 @@ const serverSchema = new mongoose.Schema({
     }
 });
 
-const server = mongoose.model("server" , serverSchema);
-export default server;
+const Server = mongoose.model("Server" , serverSchema);
+export default Server;
 
-/*import mongoose from "mongoose";
-
-const serverSchema = new mongoose.Schema({
-    servername : {
-        type : String,
-    },
-    owner : {
-        type : mongoose.Schema.Types.ObjectId,
-        ref : "user"
-    },
-    members : {
-        type : [String],
-    },
-    channels : {
-        type : [{
-            types : mongoose.Schema.Types.ObjectId,
-            ref : "channel"
-         }]
-    },
-    inviteLinks : {
-        type : [String]
-    }
-})
-
-const server = mongoose.model("server" , serverSchema);
-export default server;
-*/

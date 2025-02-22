@@ -1,8 +1,15 @@
+import jwt from "jsonwebtoken";
 import Channel from "../models/channel.model.js";
 import Server from "../models/server.model.js";
 export const createChannel =async (request , response , next)=>{
         try{
             let serverId = request.params.serverId; 
+            let adminId = jwt.verify(request.cookies.id , "secreat");
+            let isAdmin = await Server.findOne({_id : serverId , owner : adminId.id});
+
+            if(!isAdmin){
+                return response.status(400).json({message : "you're not the admin , cann't create a channel"})
+            }
             let {channelname , type } = request.body;
             // console.log(channelname , type);
 
@@ -11,7 +18,7 @@ export const createChannel =async (request , response , next)=>{
             //Is name already exist 
             
             if(channel){
-                return response.status(400).json({message : "channel name already exist in this server"});
+                return response.status(409).json({message : "channel name already exist in this server"});
             }
 
             let status =  await Server.findOne({_id : serverId});
@@ -22,9 +29,9 @@ export const createChannel =async (request , response , next)=>{
                 
             //storing the channelId into the server collection, channel array field 
             await Server.updateOne({_id : serverId} , {$push : {channels : channel._id}})
-                return response.status(201).json({message : "Channel created successfully "});
+                return response.status(201).json({message : "Channel created successfully " , channel});
             }else{
-                return response.status.json({message : "Invalid server "});
+                return response.status(400).json({message : "Invalid server "});
             }
             
         }catch(error){
@@ -38,8 +45,15 @@ export const deleteChannel = async (request , response , next)=>{
     try{
         let {channelId} = request.params;
         //checking the status of the channel 
-
+        let adminId = jwt.verify(request.cookies.id , "secreat");
+  
         let channelStatus = await Channel.findOne({_id : channelId});
+
+        let isAdmin = await Server.findOne({_id : channelStatus.serverId , owner : adminId.id});
+        
+        if(!isAdmin){
+            return response.status(403).json({message : "You don't have permission to delete this channel "})
+        }
         if(!channelStatus){
             return response.status(400).json({message : "Channel not exist"})
         }
@@ -54,21 +68,26 @@ export const deleteChannel = async (request , response , next)=>{
 export const updateChannelName = async (request , response , next)=>{
     try{
         let {channelId} = request.params;
-        let {updatedName} = request.body;
-        console.log(updatedName , channelId);
-        
+        let {updatedname} = request.body;
+        let adminId = jwt.verify(request.cookies.id , "secreat");
+        console.log(adminId);
         //checking the status of the channel 
 
         let channelStatus = await Channel.findOne({_id : channelId});
+        let isAdmin = await Server.findOne({_id : channelStatus.serverId , owner : adminId.id});
+        
+        if(!isAdmin){
+            return response.status(403).json({message : "You don't have permission to update the name  this channel "})
+        }
         if(!channelStatus){
-            return response.status(400).json({message : "Channel not exist"})
+            return response.status(404).json({message : "Channel not exist"})
         }
-        let channelName = await Channel.findOne({$and : [{_id : channelId} , {channelname : updatedName}]});
+        let channelName = await Channel.findOne({$and : [{_id : channelId} , {channelname : updatedname}]});
         if(channelName){
-            return response.status(400).json({message : "Channel name already exist"});
+            return response.status(409).json({message : "Channel name already exist"});
         }
-        await Channel.updateOne({_id : channelId} , {$set : {channelname : updatedName}});
-        return response.status(201).json({message : "Channel name updated successfully"});
+        await Channel.updateOne({_id : channelId} , {$set : {channelname : updatedname}});
+        return response.status(201).json({message : "Channel name updated successfully" });
     }catch(error){
         return response.status(500).json({message : error.message});
     }

@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const channelSchema = new mongoose.Schema({
     serverId : {
         type : mongoose.Schema.Types.ObjectId,
-        ref : "server"
+        ref : "Server"
     },
     channelname : {
         type : String,
@@ -15,9 +15,9 @@ const channelSchema = new mongoose.Schema({
         required : true
     },
     messages : {
-        type : []
+        type : [String]
     }
 })
 
-const channel = mongoose.model("channel" , channelSchema);
-export default channel;
+const Channel = mongoose.model("Channel" , channelSchema);
+export default Channel;

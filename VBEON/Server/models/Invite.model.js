@@ -8,7 +8,7 @@ const InviteSchema = new mongoose.Schema({
     },
     serverId : {
         type : mongoose.Schema.Types.ObjectId,
-        ref : "server"
+        ref : "Server"
     },
     createdAt : {
         type : Date,

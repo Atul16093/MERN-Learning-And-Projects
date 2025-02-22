@@ -8,15 +8,36 @@ import Templete from "../utils/templete.js";
 //importing a JWT token class
 import JwtToken from "../utils/JwtToken.js";
 import jwt from "jsonwebtoken";
+import EmailTemplate from "../utils/EmailTemplate.js";
+import { validationResult } from "express-validator";
 
 //signup controller
 export const register = async (request, response, next) => {
   try {
-    let { username, email, password } = request.body;
+    let errors = validationResult(request);
+    if(!errors.isEmpty()){
+      return response.status(400).json({message : "Bad Request" , errors : errors.array()})
+    }
+    let { username, email, password, dob, status , bio } = request.body;
     // console.log(username , email, password);
-    let emailStatus = await User.findOne({email});
-    if(emailStatus){
-      return response.status(400).json({message : "User alredy exist"});
+    let currentDate = new Date();
+    let birthDate = new Date(dob);
+
+    //User must be greater than 13 year
+    let difference = currentDate.getFullYear() - birthDate.getFullYear();
+    if (difference < 13) {
+      return response.status(400).json({ "Message ": "User must be 13+" });
+    }
+    if (!status) {
+      status = "online";
+    }
+    if(!bio){
+      bio = "";
+    }
+
+    let emailStatus = await User.findOne({ email });
+    if (emailStatus) {
+      return response.status(409).json({ message: "User alredy exist" });
     }
     //Ecrypting the password
     let saltKey = bcrypt.genSaltSync(10);
@@ -26,7 +47,7 @@ export const register = async (request, response, next) => {
     const OTP = helper.generateOtp(4);
 
     // Creating a collection by using create command
-    await User.create({ username, email, password, OTP });
+    let registeredDetail = await User.create({ username, email, password, dob, bio , status, OTP });
 
     // carring email inside the token
     let token = new JwtToken();
@@ -38,16 +59,22 @@ export const register = async (request, response, next) => {
       appName: "VBEON",
       name: username,
       email: email,
-      subject: "OTP FOR PASSWORD RESET",
+      subject: "Email Verification",
     };
     // console.log(data);
 
-    const templateData = new Templete().getOtpTemplete(data);
+    const templateData = new EmailTemplate().getEmailVerificationTemplate(data);
     helper.sendMail(data, templateData);
 
     //After the registration, a form will open to verify the email of the user by using get route
 
-    response.status(201).json({ message: "User registered successfully!" });
+    response
+      .status(201)
+      .json({
+        message:
+          "User registered successfully , please verify your email by OTP!",
+          user : {id : registeredDetail._id , username : registeredDetail.username , email : registeredDetail.email , dob : registeredDetail.dob , status : registeredDetail.status}
+      });
   } catch (error) {
     console.log("error in register controller", error);
     response.status(500).json({ message: "Internal server error" });
@@ -73,12 +100,14 @@ export const login = async (request, response, next) => {
         let id = emailStatus._id;
         let info = token.idToken(id);
         response.cookie("id", info);
-        return response.status(200).json({ message: "Login successfully " });
+        return response.status(200).json({ message: "Login successfully " , emailStatus});
       } else {
-        return response.status(400).json({ message: "Invalid credintial" });
+        return response
+          .status(401)
+          .json({ message: "Invalid credintial , Please try again" });
       }
     } else {
-      return response.status(400).json({ message: "Invalid credintial" });
+      return response.status(401).json({ message: "Verify your email first" });
     }
   } catch (error) {
     console.log("error in login controller", error);
@@ -101,11 +130,11 @@ export const verify = async (request, response, next) => {
       //Updating the status value null
       await User.updateOne({ email: status.email }, { $set: { OTP: null } });
       return response.status(200).json({
-        message: "User register successfully (redirect to the login page )",
+        message: "Email verified successfully,, Now you can login"
       });
     } else {
       return response
-        .status(400)
+        .status(401)
         .json({ message: "Incorrect OTP Register Again" });
     }
   } catch (error) {
@@ -118,6 +147,10 @@ export const verify = async (request, response, next) => {
 //Forget password router whenever user click on forget password this api request will trigger
 export const forget = async (request, response, next) => {
   try {
+    let errors = validationResult(request);
+    if(!errors.isEmpty()){
+      return response.status(400).json({error : errors.array()});
+    }
     const { email } = request.body;
     let status = await User.findOne({ email });
 
@@ -155,6 +188,10 @@ export const forget = async (request, response, next) => {
 //password updating router
 export const updatePassword = async (request, response, next) => {
   try {
+    let errors = validationResult(request);
+    if(!errors.isEmpty()){
+      return response.status.json({error : errors.array()});
+    }
     //Now here a passoword updation window will open
     const { newPassword } = request.body;
     let email = jwt.verify(request.cookies.emailToken, "secreat");
@@ -170,7 +207,7 @@ export const updatePassword = async (request, response, next) => {
         .status(201)
         .json({ message: "Password updated succesfully " });
     } else {
-      return response.status(400).josn({ message: error.message });
+      return response.status(400).json({ message: "error" });
     }
   } catch (error) {
     console.log("Error in reset password ", error);

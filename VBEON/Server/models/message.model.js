@@ -3,15 +3,15 @@ import mongoose from "mongoose";
 const messageSchema = new mongoose.Schema({
     sender : {
         type : mongoose.Schema.Types.ObjectId,
-        ref : "user",
+        ref : "User",
         required : true,
     },
     receiver :{
         type : mongoose.Schema.Types.ObjectId,
-        ref : "user",
+        ref : "User",
         required : true,
     },
-    audioUrl: {
+      audioUrl: {
         type: String,
         required: false, 
       },
@@ -29,6 +29,6 @@ const messageSchema = new mongoose.Schema({
     }
 );
 
-const message = mongoose.model("message" , messageSchema);
+const Message = mongoose.model("Message" , messageSchema);
 
-export default message;
+export default Message;
