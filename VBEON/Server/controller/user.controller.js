@@ -229,3 +229,14 @@ export const getDetail = async (request, response, next) => {
     return response.status(500).json({ message: "Internal server error" });
   }
 };
+
+export const logout = (request , response  ,next)=>{
+    try{
+        response.clearCookie("token")
+        return response.status(200).json({message : "Logout successfully "});
+      }catch(error){
+          console.log("Error in logout controller" , error);
+          return response.status(500).json({message : "Internal server error"})
+        }
+
+}

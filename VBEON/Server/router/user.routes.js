@@ -1,6 +1,6 @@
 import express from "express";
 import {body} from "express-validator";
-import { register , login  , verify , forget , updatePassword , getDetail} from "../controller/user.controller.js";
+import { register , login  , verify , forget , updatePassword , getDetail , logout} from "../controller/user.controller.js";
 import { OTPVerify } from "../middleware/otpVerification.js";
 const router = express.Router();
 
@@ -33,8 +33,11 @@ router.post("/reset-password" ,
     body("password" , "password length should be between 8 to 16").isLength({min : 8 , max : 16}),
      updatePassword);
 
-//ge userdetail by the help of id 
+//Logout 
+router.get("/log-out" , logout);
 
+//getuserdetail by the help of id 
 router.get("/:id" , getDetail)
+
 
 export default router;
