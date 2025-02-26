@@ -4,6 +4,8 @@ import Server from "../models/server.model.js";
 import Invite from "../models/Invite.model.js";
 import Channel from "../models/channel.model.js";
 import mongoose from "mongoose";
+import dotenv from "dotenv";
+dotenv.config();
 import { validationResult } from "express-validator";
 export const createServer = async (request , response , next)=>{
         try{
@@ -13,7 +15,7 @@ export const createServer = async (request , response , next)=>{
             }
             let {servername} = request.body;
              //Find the user who's creating a server
-             let getUserId = jwt.verify(request.cookies.id , "secreat");
+             let getUserId = jwt.verify(request.cookies.id , process.env.KEY);
             //  console.log(getUserId.id);
             let serverStatus = await Server.findOne({servername});
             if(serverStatus){
@@ -38,7 +40,7 @@ export const createServer = async (request , response , next)=>{
 export const joinServer = async (request , response , next)=>{
     try{
         const {inviteCode} = request.params;
-        let getUserId = jwt.verify(request.cookies.id , "secreat");
+        let getUserId = jwt.verify(request.cookies.id , process.env.KEY);
         let userId = getUserId.id;
         
         let inviteStatus = await Invite.findOne({code : inviteCode});
@@ -70,7 +72,7 @@ export const joinServer = async (request , response , next)=>{
 export const leave = async (request, response , next)=>{
     try{
         let {serverId} = request.params;
-        let tokenObj = jwt.verify(request.cookies.id , "secreat");
+        let tokenObj = jwt.verify(request.cookies.id , process.env.KEY);
         let getUserId = tokenObj.id;
         
         //Checking the server existence
@@ -105,7 +107,7 @@ export const deleteServer = async (request , response , next)=>{
     try{
     let {serverId} = request.params;
     let serverStatus = await Server.findOne({_id : serverId});
-    let tokenObj = jwt.verify(request.cookies.id , "secreat");
+    let tokenObj = jwt.verify(request.cookies.id , process.env.KEY);
     let getUserId = tokenObj.id;
     if(!serverStatus){
         return response.status(400).json({message : "Invalid server access"});
@@ -129,7 +131,7 @@ export const updateServerName = async (request , response , next)=>{
         let {serverId} = request.params;
         let {updatedname} = request.body;
         //checking the status of the channel 
-        let adminId = jwt.verify(request.cookies.id , "secreat");
+        let adminId = jwt.verify(request.cookies.id , process.env.KEY);
 
         let serverStatus = await Server.findOne({_id : serverId});
 
@@ -160,7 +162,7 @@ export const updateServerName = async (request , response , next)=>{
 export const getServerDetail = async(request , response , next)=>{
     try{
         let {serverId} = request.params;
-        console.log(serverId);
+        // console.log(serverId);
         
         let serverInfo = await Server.findOne({_id : serverId})
         if(!serverInfo){

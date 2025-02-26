@@ -8,6 +8,8 @@ import Templete from "../utils/templete.js";
 //importing a JWT token class
 import JwtToken from "../utils/JwtToken.js";
 import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+dotenv.config();
 import EmailTemplate from "../utils/EmailTemplate.js";
 import { validationResult } from "express-validator";
 
@@ -121,7 +123,7 @@ export const login = async (request, response, next) => {
 export const verify = async (request, response, next) => {
   try {
     let { OTP } = request.body;
-    let email = jwt.verify(request.cookies.emailVerifyToken, "secreat");
+    let email = jwt.verify(request.cookies.emailVerifyToken, process.env.KEY);
     let mail = email.data;
 
     //check is email and OTP both are same or not, here we carry mail data by the help of token
@@ -194,7 +196,7 @@ export const updatePassword = async (request, response, next) => {
     }
     //Now here a passoword updation window will open
     const { newPassword } = request.body;
-    let email = jwt.verify(request.cookies.emailToken, "secreat");
+    let email = jwt.verify(request.cookies.emailToken, process.env.KEY);
     let status = await User.findOne({ email: email.data });
     if (status) {
       let salt = bcrypt.genSaltSync(10);
@@ -215,7 +217,7 @@ export const updatePassword = async (request, response, next) => {
   }
 };
 
-export const getDetail = async (request, response, next) => {
+export const getDetailById = async (request, response, next) => {
   try {
     let { id } = request.params;
     let detail = await User.findOne({ _id: id });
@@ -223,9 +225,23 @@ export const getDetail = async (request, response, next) => {
     if (!detail) {
       return response.status(400).json({ message: "User not found" });
     }
-    return response.status(200).json({ message: "Successfull", detail });
+    return response.status(200).json({ message: "Successfull", userInfo : {id : detail._id ,username : detail.username , email : detail.email , bio : detail.bio , status : detail.status} });
   } catch (error) {
-    console.log("error in getDetail controller", error);
+    console.log("error in getDetailById controller", error);
+    return response.status(500).json({ message: "Internal server error" });
+  }
+};
+export const getDetailByName = async (request, response, next) => {
+  try {
+    let { username } = request.params;
+    let detail = await User.findOne({ username });
+
+    if (!detail) {
+      return response.status(400).json({ message: "User not found" });
+    }
+    return response.status(200).json({ message: "Successfull", userInfo : {id : detail._id ,username : detail.username , email : detail.email , bio : detail.bio , status : detail.status} });
+  } catch (error) {
+    console.log("error in getDetailByName controller", error);
     return response.status(500).json({ message: "Internal server error" });
   }
 };
@@ -239,4 +255,42 @@ export const logout = (request , response  ,next)=>{
           return response.status(500).json({message : "Internal server error"})
         }
 
+}
+
+export const uploadProfile = async(request , response ,next)=>{
+  try{
+      if(!request.file){
+        response.status(404).json({message : "no such file found "});
+      }
+      const filePath = `/public/uploads/${request.file.filename}`;
+      // const userId = jwt.verify(request.cookies.id , process.env.KEY);
+      //Here currently we pass id direclty cause our front end is not ready and I want to check is the image path stored successfully or not 
+      const userStatus = await User.findOne({_id : "67b8c8c6d746896a18c331fd"})
+      if(!userStatus){
+        return response.status(401).json({message : "Unathorized user"})
+      }
+      await User.updateOne({profilePic : filePath })
+  }catch(err){
+        console.log("Error in uploadProfile Controller",err);  
+        response.status(500).json({message : "Internal server error"});
+  }
+}
+//Currently I hardcode the userId for some reason but I'll make this dynamic 
+export const getProfile = async (request , response , next)=>{
+  try{
+       const userStatus = await User.findOne({_id : "67b8c8c6d746896a18c331fd"});
+       if(!userStatus){
+        return response.status(401).json({message : "Unathorized user"})
+      }
+      const url = userStatus.profilePic;
+      return response.status(200).json({message : "profile url " , url})
+       
+  }catch(error){
+    console.log("Error in getProfile controller", error);
+    response.status(500).json({message : "Internal server error"});
+    
+  }
+}
+export const view = (request, response , next)=>{
+  response.render("form.ejs")
 }

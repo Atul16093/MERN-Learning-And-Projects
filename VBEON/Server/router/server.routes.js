@@ -27,11 +27,11 @@ router.post("/join/:inviteCode" ,auth, joinServer);
 router.delete("/:serverId/leave" ,auth , leave)
 
 //Delete Server 
-router.delete("/:serverId" ,auth , deleteServer);
+router.delete("/delete/:serverId" ,auth , deleteServer);
 
 //Update server name 
 router.put("/:serverId/usn" ,auth , updateServerName);
 
 //Member detail
-router.get("/:serverId" ,auth , getServerDetail);
+router.get("/search-server/:serverId" ,auth , getServerDetail);
 export default router;

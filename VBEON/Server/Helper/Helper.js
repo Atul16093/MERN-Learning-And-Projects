@@ -1,8 +1,6 @@
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 dotenv.config();
-console.log(process.env.KEY);
-
 export default class Helper{
 
     async sendMail(data, template){

@@ -41,6 +41,10 @@ const userSchema = new mongoose.Schema({
   OTP: {
     type: Number,
   },
+  profilePic : {
+    type : String,
+    default: "/public/uploads/default-profile.png"
+  }
 });
 
 const User = mongoose.model("User", userSchema);

@@ -1,7 +1,9 @@
 import express from "express";
 import {body} from "express-validator";
-import { register , login  , verify , forget , updatePassword , getDetail , logout} from "../controller/user.controller.js";
+import { register , login  , verify , forget , updatePassword , getDetailById , getDetailByName , uploadProfile , logout ,view , getProfile} from "../controller/user.controller.js";
 import { OTPVerify } from "../middleware/otpVerification.js";
+import {auth} from "../middleware/auth.js"
+import upload from "../middleware/multerConfigure.js";
 const router = express.Router();
 
 //signin route
@@ -33,11 +35,22 @@ router.post("/reset-password" ,
     body("password" , "password length should be between 8 to 16").isLength({min : 8 , max : 16}),
      updatePassword);
 
+//Upload profile pic 
+router.post("/upload-avatar" , upload.single("avatar") , uploadProfile);
+
+//Get user profile 
+
+router.get("/profile-pic" , getProfile);
+
+//this route made for testing of multer
+router.get("/view-page" , view)
 //Logout 
 router.get("/log-out" , logout);
 
 //getuserdetail by the help of id 
-router.get("/:id" , getDetail)
+router.get("/byid/:id" ,auth, getDetailById)
+
+router.get("/byname/:username" ,auth, getDetailByName)
 
 
 export default router;

@@ -1,8 +1,10 @@
 import jwt from "jsonwebtoken";
+import dotenv from "dotenv"
+dotenv.config();
 export const OTPVerify = (request , response , next)=>{
     try{
         const {OTP} = request.body;  
-        let match = jwt.verify(request.cookies.OTPToken , "secreat")
+        let match = jwt.verify(request.cookies.OTPToken , process.env.KEY)
         //If otp will match so user can reset the password a form will show to user for password reset 
        if(match.OTP == OTP){
            return response.status(200).json({message : "Authorized user enter your new password"})

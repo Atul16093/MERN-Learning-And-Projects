@@ -1,10 +1,12 @@
 import jwt from "jsonwebtoken";
 import Channel from "../models/channel.model.js";
 import Server from "../models/server.model.js";
+import dotenv from "dotenv";
+dotenv.config();
 export const createChannel =async (request , response , next)=>{
         try{
             let serverId = request.params.serverId; 
-            let adminId = jwt.verify(request.cookies.id , "secreat");
+            let adminId = jwt.verify(request.cookies.id , process.env.KEY);
             let isAdmin = await Server.findOne({_id : serverId , owner : adminId.id});
 
             if(!isAdmin){
@@ -45,7 +47,7 @@ export const deleteChannel = async (request , response , next)=>{
     try{
         let {channelId} = request.params;
         //checking the status of the channel 
-        let adminId = jwt.verify(request.cookies.id , "secreat");
+        let adminId = jwt.verify(request.cookies.id , process.env.KEY);
   
         let channelStatus = await Channel.findOne({_id : channelId});
 
@@ -69,7 +71,7 @@ export const updateChannelName = async (request , response , next)=>{
     try{
         let {channelId} = request.params;
         let {updatedname} = request.body;
-        let adminId = jwt.verify(request.cookies.id , "secreat");
+        let adminId = jwt.verify(request.cookies.id , process.env.KEY);
         console.log(adminId);
         //checking the status of the channel 
 
