@@ -35,7 +35,7 @@ router.post("/reset-password" ,
     body("password" , "password length should be between 8 to 16").isLength({min : 8 , max : 16}),
      updatePassword);
 
-//Upload profile pic 
+//Upload profile pic  
 router.post("/upload-avatar" , upload.single("avatar") , uploadProfile);
 
 //Get user profile 

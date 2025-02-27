@@ -291,6 +291,7 @@ export const getProfile = async (request , response , next)=>{
     
   }
 }
+//For testing 
 export const view = (request, response , next)=>{
   response.render("form.ejs")
 }
