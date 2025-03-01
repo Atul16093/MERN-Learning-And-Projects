@@ -14,6 +14,12 @@ const channelSchema = new mongoose.Schema({
         enum : ["text" , "voice" ],
         required : true
     },
+    //I'll check this during the member access the channel, if user is moderator or admin so they can send the message otherwise member see a message "only admin and moderator "
+    permittedRoles: {
+        type: [String],
+        enum: ["admin", "moderator", "member"], 
+        default: ["admin", "moderator"] 
+    },
     messages : {
         type : [String]
     }

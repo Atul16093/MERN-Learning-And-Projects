@@ -2,7 +2,8 @@ import express from "express";
 import {createChannel,
         deleteChannel,
         updateChannelName,
-        getChannel
+        getChannel,
+        updateRole
        } from "../controller/channel.controller.js"
 import { auth } from "../middleware/auth.js";
 const router = express.Router();
@@ -14,7 +15,8 @@ router.delete("/:channelId/delete" ,auth , deleteChannel )
 
 //Update channel name 
 router.put("/:channelId/ucn" ,auth, updateChannelName)
-export default router;
 
+router.put("/:channelId/updaterole" , auth , updateRole);
 //Get channel
 router.get("/:serverId/channel" ,auth, getChannel)
+export default router;

@@ -246,8 +246,18 @@ export const getDetailByName = async (request, response, next) => {
   }
 };
 
-export const logout = (request , response  ,next)=>{
+export const logout = async (request , response  ,next)=>{
     try{
+        let token = request.cookies.token;
+        let decodeToken = jwt.verify(request.cookies.token , process.env.KEY);
+        let currentStatus = await User.findOne({email : decodeToken.data});
+
+        if(!currentStatus){
+          return response.status(404).json({message : "Unexcpected error occur "});
+        }
+        console.log(decodeToken.data);
+        
+        await User.updateOne({email : decodeToken.data} , {token});
         response.clearCookie("token")
         return response.status(200).json({message : "Logout successfully "});
       }catch(error){

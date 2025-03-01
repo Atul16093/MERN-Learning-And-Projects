@@ -72,7 +72,6 @@ export const updateChannelName = async (request , response , next)=>{
         let {channelId} = request.params;
         let {updatedname} = request.body;
         let adminId = jwt.verify(request.cookies.id , process.env.KEY);
-        console.log(adminId);
         //checking the status of the channel 
 
         let channelStatus = await Channel.findOne({_id : channelId});
@@ -91,7 +90,40 @@ export const updateChannelName = async (request , response , next)=>{
         await Channel.updateOne({_id : channelId} , {$set : {channelname : updatedname}});
         return response.status(201).json({message : "Channel name updated successfully" });
     }catch(error){
-        return response.status(500).json({message : error.message});
+        console.log("Error in update channel name router " , error);
+        
+        return response.status(500).json({message : "Internal server error "});
+    }
+}
+export const updateRole = async(request , response , next)=>{
+    try{
+        let {channelId} = request.params;
+        let {updateRole} = request.body;
+
+        let adminId = jwt.verify(request.cookies.id , process.env.KEY);
+        //checking the status of the channel 
+
+        let channelStatus = await Channel.findOne({_id : channelId});
+        console.log(channelStatus);
+        
+        if(!channelStatus){
+            return response.status(404).json({message : "Channel not exist"})
+        }
+
+        let isAdmin = await Server.findOne({_id : channelStatus.serverId , owner : adminId.id});
+        
+        if(!isAdmin){
+            return response.status(403).json({message : "You don't have permission to change the role of this channel "})
+        }
+        if(!channelStatus.permittedRoles.some(value =>value === updateRole)){
+        await Channel.updateOne({_id : channelId}, {$push : {permittedRoles : updateRole}});
+        return response.status(201).json({message : `Now the ${updateRole} can also message ` });
+        }else{
+            return response.status(409).json({message : `The ${updateRole} already avilable inside an member array  ` });
+        }
+    }catch(error){
+        console.log("Error in updateRole router " ,error);
+        return response.status(500).json({message : "Internal server error "});
     }
 }
 export const getChannel = async(request , response , next)=>{
