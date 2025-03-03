@@ -8,6 +8,7 @@ import connection from "./db/dbConfig.js";
 import userRouter from "./router/user.routes.js";
 import serverRouter from "./router/server.routes.js";
 import channelRouter from "./router/channel.routes.js"
+import cors from "cors";
 dotenv.config();
 const app = express();
 const server = createServer(app);
@@ -17,6 +18,11 @@ connection();
 app.set("view engine" , "ejs");
 app.use(express.urlencoded({extended : true}))
 app.use(express.json());
+const corsOptions = {
+    origin: "http://localhost:5173", 
+    credentials: true,               
+  };
+app.use(cors(corsOptions));
 //Must need to use this built in middleware, if you want to read the cookies data.
 app.use(cookieParser());
 app.use(express.static("./public"))

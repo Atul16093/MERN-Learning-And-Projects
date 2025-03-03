@@ -75,7 +75,7 @@ export const register = async (request, response, next) => {
       .json({
         message:
           "User registered successfully , please verify your email by OTP!",
-          user : {id : registeredDetail._id , username : registeredDetail.username , email : registeredDetail.email , dob : registeredDetail.dob , status : registeredDetail.status}
+          user : {id : registeredDetail._id , username : registeredDetail.username , email : registeredDetail.email , dob : registeredDetail.dob , status : registeredDetail.status, emailVerifyToken : emailToken}
       });
   } catch (error) {
     console.log("error in register controller", error);
