@@ -102,14 +102,14 @@ export const login = async (request, response, next) => {
         let id = emailStatus._id;
         let info = token.idToken(id);
         response.cookie("id", info);
-        return response.status(200).json({ message: "Login successfully " , emailStatus});
+        return response.status(200).json({ message: "Login successfully " , user : {username : emailStatus.username, email : emailStatus.email ,servers : emailStatus.servers, status : emailStatus.status , mailToken : data , userId : info}});
       } else {
         return response
           .status(401)
           .json({ message: "Invalid credintial , Please try again" });
       }
     } else {
-      return response.status(401).json({ message: "Verify your email first" });
+      return response.status(401).json({ message: "User Not Found  " });
     }
   } catch (error) {
     console.log("error in login controller", error);
