@@ -1,0 +1,320 @@
+/* RESET */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* BODY STYLING */
+  body {
+    font-family: "Inter", sans-serif;
+    background-color: #141625;
+    color: #ffffff;
+  }
+  
+  /* DASHBOARD LAYOUT */
+  .dashboard {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+  }
+  
+  /* SERVER LIST (Far Left) */
+  .server-list {
+    width: 72px;
+    min-width: 72px;
+    background-color: #202225;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 10px;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  
+  .server-list ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .server-icon {
+    width: 48px;
+    height: 48px;
+    background-color: #2f3136;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    overflow: hidden;
+    transition: background-color 0.2s;
+    margin: 0 auto;
+  }
+  
+  .server-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .server-icon:hover {
+    background-color: #3b82f6; /* Hover color */
+  }
+  
+  .home-icon {
+    font-size: 24px;
+  }
+  
+  .add-server {
+    font-size: 24px;
+    color: #fff;
+  }
+  
+  .minimize{
+      margin-bottom: 12px !important;
+    transform: rotate(90deg);
+  }
+  /* SIDEBAR (Channels) */
+  .sidebar {
+    width: 240px;
+    min-width: 200px;
+    background: linear-gradient(180deg, #2a2a40 0%, #1f1f2e 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+    
+  }
+  .minSidebar{
+    width: 240px;
+    min-width: 200px;
+    background: linear-gradient(180deg, #2a2a40 0%, #1f1f2e 100%);
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  
+  /* Sidebar Header */
+  .sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .logo {
+    font-size: 20px;
+    font-weight: bold;
+    letter-spacing: 1px;
+  }
+  
+  /* Channels Section */
+  .channels {
+    flex: 1;
+    padding: 10px 20px;
+    overflow-y: auto;
+  }
+  
+  .channel-group {
+    margin-bottom: 20px;
+  }
+  
+  .channel-group h3 {
+    font-size: 14px;
+    opacity: 0.8;
+    margin-bottom: 8px;
+  }
+  
+  .channel-group ul {
+    list-style: none;
+    margin-left: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  
+  .channel-group li {
+    cursor: pointer;
+    font-size: 14px;
+    transition: color 0.2s;
+  }
+  
+  .channel-group li:hover {
+    color: #3b82f6;
+  }
+  
+  /* User Info (bottom of sidebar) */
+  .user-info {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: #1c1c2b;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .user-info img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+  
+  .user-details {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .username {
+    font-weight: bold;
+    font-size: 14px;
+  }
+  
+  .status {
+    font-size: 12px;
+    color: #8b8b9e;
+  }
+  
+  /* MAIN CONTENT */
+  .main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Channel Header */
+  .channel-header {
+    background-color: #1c1c2b;
+    padding: 15px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .channel-header h2 {
+    font-size: 18px;
+  }
+  
+  /* Chat Area */
+  .chat-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  /* Messages */
+  .messages {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+  }
+  
+  .welcome-message {
+    opacity: 0.8;
+    margin-bottom: 10px;
+  }
+  
+  /* Chat Input */
+  .chat-input {
+    padding: 15px 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .chat-input input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #3a3a52;
+    border-radius: 6px;
+    background-color: #2a2a40;
+    color: #fff;
+    outline: none;
+    transition: border 0.2s;
+  }
+  
+  .chat-input input:focus {
+    border-color: #3b82f6;
+  }
+  
+  /* Scrollbar Styling (Optional) */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #1f1f2e;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #3a3a52;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #3b82f6;
+  }
+  
+  /* RESPONSIVE DESIGN */
+  @media (max-width: 768px) {
+    .dashboard {
+      flex-direction: column;
+    }
+  
+    /* Server List becomes horizontal at top */
+    .server-list {
+      width: 100%;
+      min-width: auto;
+      height: 72px;
+      flex-direction: row;
+      justify-content: center;
+      overflow-x: auto;
+      overflow-y: hidden;
+    }
+  
+    .server-list ul {
+      flex-direction: row;
+      align-items: center;
+      padding: 0 10px;
+    }
+  
+    .sidebar {
+      width: 100%;
+      min-width: auto;
+      flex-direction: row;
+      align-items: flex-start;
+      justify-content: space-between;
+      overflow-x: auto;
+      overflow-y: hidden;
+      height: auto;
+    }
+  
+    .sidebar-header {
+      padding: 10px 15px;
+      border-bottom: none;
+    }
+  
+    .channels {
+      display: flex;
+      flex-direction: row;
+      gap: 20px;
+      padding: 10px 15px;
+      overflow-x: auto;
+      overflow-y: hidden;
+    }
+  
+    .user-info {
+      display: none; /* Hide or adjust as needed */
+    }
+  
+    .main {
+      height: calc(100vh - 72px); /* Because server-list is now 72px high */
+    }
+  
+    .channel-header {
+      padding: 10px 15px;
+    }
+  
+    .messages {
+      padding: 10px 15px;
+    }
+  
+    .chat-input {
+      padding: 10px 15px;
+    }
+  }
+  

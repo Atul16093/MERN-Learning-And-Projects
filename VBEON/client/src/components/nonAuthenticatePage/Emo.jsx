@@ -3,6 +3,7 @@ import "./Emo.css"
 import axios from "axios";
 import api from "../../api.jsx";
 import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom";
 const Emo = ()=>{
   //Count the step for tracking the user action
     const [step , setStep] = useState(0);
@@ -18,13 +19,15 @@ const Emo = ()=>{
         OTP      : ""
     })
 
+    //Navigation hook
+    const navigate = useNavigate();
+
     //This array will help us , to setting the data into userData object
     const userKeys = ["username", "email", "dob", "status", "password"];
 
     let userInputRef = useRef();
     //Chat container ref will help us to scroll chat automatically
     let chatContainerRef = useRef();
-
     const steps = [
         "Greetings! May I know the name behind that awesome personality?",
         "What's the email address where you'd like to receive updates and cool surprises?",
@@ -62,6 +65,7 @@ const Emo = ()=>{
       if(field === "email"){
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if(!emailRegex.test(value)){
+          setChatHistory((prev) => [...prev , {sender : "user" , text : value}]);
           return "Please enter a valid email address."
         }
       }
@@ -98,6 +102,7 @@ const Emo = ()=>{
 
         if(error){
           setChatHistory(prev =>[...prev , {sender : "assistant" , text : error}]);
+          userInputRef.current.value = "";
           return;
         }
 
@@ -111,7 +116,7 @@ const Emo = ()=>{
         userInputRef.current.value = "";
         let nextStep =step + 1;
         setStep(nextStep);
-        if (nextStep < steps.length) {
+        if (nextStep < steps.length) {          
             setChatHistory(prev => [
               ...prev,
               { sender: "assistant", text: steps[nextStep] }
@@ -121,8 +126,8 @@ const Emo = ()=>{
               ...prev,
               { sender: "assistant", text: "Registration complete!" }
             ]);
-            setStep(steps.length)
-          }else if(steps.length == 6){
+            setStep(steps.length )
+          }else if(steps.length == 6){            
             setChatHistory(prev =>[
               ...prev , {sender : "assistant" , text : steps[nextStep]}
             ])
@@ -138,6 +143,8 @@ const Emo = ()=>{
         useEffect(() => {          
           if (step === userKeys.length) {            
             const register = async () => {
+              console.log(userData);
+              
               try {
                 const res = await axios.post(api.REGISTER, {
                   username: userData.username,
@@ -150,6 +157,7 @@ const Emo = ()=>{
 
                 //Here we're getting the token from the backend and set that token into the cookies 
                 
+
                 const emailToken = res.data.user.emailVerifyToken;
                 console.log(emailToken);
                 
@@ -158,15 +166,17 @@ const Emo = ()=>{
                 }
               } catch (err) {
                 console.log("Error in Emo.jsx register function", err);
+                const errMsg = err.response.data.message || "Invalid Information";
+                setChatHistory((prev)=>[...prev , {sender : "assistant" , text : errMsg}]);
+                setChatHistory((prev)=>[...prev , {sender : "assistant" , text : "Let's try again. Greetings! May I know the name behind that awesome personality?"}]);
+                setStep(0);
               }
             };
             register();
           }else if (step == steps.length){
-            console.log("Hello");
             
             const verifyEmail = async ()=>{
               try{
-                console.log("verifyEmail" , userData , userData.OTP);
                 
                 const res = await axios.post(api.EMAILVERIFICATION , {
                   OTP : userData.OTP,
@@ -180,7 +190,7 @@ const Emo = ()=>{
               }catch(err){
                 console.log("Error in verifyOtp fucntion" , err);
                 const errorMsg =
-                err.response?.data?.message || "Incorrect OTP. Please try again.";
+                err.response.data.message || "Incorrect OTP. Please try again.";
               setChatHistory((prev) => [
                 ...prev,
                 { sender: "assistant", text: errorMsg }
@@ -193,11 +203,14 @@ const Emo = ()=>{
           }
         }, [step, userData, steps.length]);
         
+        const login = ()=>{
+            navigate("/login");
+        }
     return <>
      <div className="glass-bg">
         <header className="glass-header">
           <h1 className="signup-btn">Emo</h1>
-          <button className="signup-btn">Sign Up with Ease!</button>
+          <button onClick={login} className="signup-btn">Login</button>
         </header>
       <div className="glass-container">
         <div className="glass-content" ref={chatContainerRef}>

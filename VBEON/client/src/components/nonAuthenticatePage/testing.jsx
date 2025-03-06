@@ -1,63 +1,38 @@
 import { useRef, useState, useEffect } from "react";
 import "./Emo.css";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import api from "../../api.jsx";
 import Cookies from "js-cookie";
 
-const Emo = () => {
+const Login = () => {
   const [step, setStep] = useState(0);
   const [chatHistory, setChatHistory] = useState([
-    { sender: "Emo", text: "Greetings! May I know the name behind that awesome personality?" }
+    { sender: "Emo", text: "Greetings, friend! 👋 I'm excited to have you back. Please enter your email address so I can recognize you" }
   ]);
+
   const [userData, setUserData] = useState({
-    username: "",
     email: "",
-    dob: "",
-    status: "",
-    password: "",
-    OTP: ""
+    password: ""
   });
 
-  // Keys for the first five fields only.
-  const userKeys = ["username", "email", "dob", "status", "password"];
+  const userKeys = ["email", "password"];
+  const steps = [
+    "Greetings, friend! 👋 I'm excited to have you back. Please enter your email address so I can recognize you",
+    "Great, I've got your email! Now, could you please type in your secret password to unlock your chat universe? Your privacy is my top priority!"
+  ];
 
+  // Ref declarations 
   const userInputRef = useRef();
   const chatContainerRef = useRef();
 
-  // Steps array: indices 0-4 are for user data; index 5 is the OTP prompt.
-  const steps = [
-    "Greetings! May I know the name behind that awesome personality?",
-    "What's the email address where you'd like to receive updates and cool surprises?",
-    "Could you share your birthday so we can celebrate you in style?",
-    "How would you like to show up? Are you online, offline, idle, or in Do Not Disturb mode?",
-    "Time to lock things down! Create a password that only you know.",
-    "Please enter your OTP to verify the email."
-  ];
+  // Hook for navigation 
+  const navigate = useNavigate();
+  const signUp = () => {
+    navigate("/emo");
+  };
 
-  // Fix: Use OR instead of AND for password length check.
-  function validatePassword(password) {
-    if (password.length < 6 || password.length > 16) {
-      return false;
-    }
-    let hasLower = false;
-    let hasUpper = false;
-    let hasDigit = false;
-    let hasSpecial = false;
-    const specialCharacters = "!@#$%^&*()_+[]{}|;':\",.<>/?";
-    for (let char of password) {
-      if (char >= "a" && char <= "z") {
-        hasLower = true;
-      } else if (char >= "A" && char <= "Z") {
-        hasUpper = true;
-      } else if (char >= "0" && char <= "9") {
-        hasDigit = true;
-      } else if (specialCharacters.includes(char)) {
-        hasSpecial = true;
-      }
-    }
-    return hasLower && hasUpper && hasDigit && hasSpecial;
-  }
-
+  // Input validation for email.
   const validateInput = (field, value) => {
     if (field === "email") {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -65,50 +40,33 @@ const Emo = () => {
         return "Please enter a valid email address.";
       }
     }
-    if (field === "password") {
-      if (!validatePassword(value)) {
-        return "Password must contain one lowercase, one uppercase, one special character and one number.";
-      }
-    }
-    return ""; // No error.
+    return "";
   };
 
   const sendMessage = () => {
-    const mess = userInputRef.current.value.trim();
+    const mess = userInputRef.current.value;
     if (!mess) return;
-
-    // If we are at the OTP step (step === 5), update the OTP field.
-    if (step === userKeys.length) {
-      // Append user's OTP message.
-      setChatHistory((prev) => [...prev, { sender: "user", text: mess }]);
-      // Update OTP in userData.
-      setUserData((prev) => ({ ...prev, OTP: mess }));
-      userInputRef.current.value = "";
-      // Advance to the next step (step 6) to trigger OTP verification.
-      setStep(steps.length);
-      return;
-    }
-
-    // For fields covered by userKeys.
-    const currentField = userKeys[step];
-    const error = validateInput(currentField, mess);
-    if (error) {
-      setChatHistory((prev) => [...prev, { sender: "assistant", text: error }]);
-      return;
-    }
-
-    // Append the user's message.
+    // Append the user's message to the chat.
     setChatHistory((prev) => [...prev, { sender: "user", text: mess }]);
-    // Update the corresponding field in userData.
-    setUserData((prev) => ({ ...prev, [currentField]: mess }));
+    // Validate input.
+    const error = validateInput(userKeys[step], mess);
+    if (error) {
+      setChatHistory((prev) => [...prev, { sender: "Emo", text: error }]);
+      return;
+    }
+    // Update userData.
+    setUserData((prev) => ({ ...prev, [userKeys[step]]: mess }));
     userInputRef.current.value = "";
-
-    // Advance to the next step.
-    const nextStep = step + 1;
-    setStep(nextStep);
-    // Append the assistant's next prompt if available.
+    let nextStep = step + 1;
     if (nextStep < steps.length) {
-      setChatHistory((prev) => [...prev, { sender: "assistant", text: steps[nextStep] }]);
+      setChatHistory((prev) => [
+        ...prev,
+        { sender: "assistant", text: steps[nextStep] }
+      ]);
+      setStep(nextStep);
+    } else {
+      // Even when nextStep is not less than steps.length, update the step.
+      setStep(nextStep);
     }
   };
 
@@ -119,55 +77,53 @@ const Emo = () => {
     }
   }, [chatHistory]);
 
-  // Trigger registration or OTP verification based on the step.
+  // Login useEffect: Trigger login once both email and password have been entered.
   useEffect(() => {
-    // Registration API call should happen when step equals the number of fields (5).
     if (step === userKeys.length) {
-      const register = async () => {
+      const login = async () => {
         try {
-          const res = await axios.post(api.REGISTER, {
-            username: userData.username,
+          const res = await axios.post(api.LOGIN, {
             email: userData.email,
-            password: userData.password,
-            status: userData.status,
-            dob: userData.dob
+            password: userData.password
           });
-          console.log("Registration successful:", res.data);
-          // Get the email verification token from the response.
-          const emailToken = res.data.user.emailVerifyToken;
-          console.log("Email verification token:", emailToken);
-          if (emailToken) {
-            Cookies.set("emailVerifyToken", emailToken, { expires: 7, path: "/" });
+          console.log("Login successful:", res.data);
+          // If login is successful, store tokens as needed.
+          const mailToken = res.data.user.mailToken;
+          if (mailToken) {
+            Cookies.set("mailToken", mailToken, { expires: 7, path: "/" });
           }
+          const userId = res.data.user.userId;
+          if (userId) {
+            Cookies.set("userId", userId, { expires: 7, path: "/" });
+          }
+          setChatHistory((prev) => [
+            ...prev,
+            { sender: "assistant", text: "Login successful!" }
+          ]);
         } catch (err) {
-          console.log("Error in register function:", err);
+          console.log("Error in Login function:", err);
+          // Extract the error message from the response or use a default message.
+          const errorMsg =
+            err.response?.data?.message ||
+            "Login failed. Please check your email and password.";
+          // Append the error message to the chat so the user can see it.
+          setChatHistory((prev) => [
+            ...prev,
+            { sender: "assistant", text: errorMsg }
+          ]);
         }
       };
-      register();
-    } else if (step === steps.length) {
-      // OTP verification when step equals steps.length (6).
-      const verifyEmail = async () => {
-        try {
-          console.log("Verifying email with OTP:", userData.OTP);
-          const res = await axios.post(
-            api.EMAILVERIFICATION,
-            { OTP: userData.OTP },
-            { withCredentials: true }
-          );
-          console.log("OTP verification response:", res.data);
-        } catch (err) {
-          console.log("Error in verifyEmail function:", err);
-        }
-      };
-      verifyEmail();
+      login();
     }
-  }, [step, userData, steps.length]);
+  }, [step, userData, userKeys.length]);
 
   return (
     <div className="glass-bg">
       <header className="glass-header">
         <h1 className="signup-btn">Emo</h1>
-        <button className="signup-btn">Sign Up with Ease!</button>
+        <button onClick={signUp} className="signup-btn">
+          SignUp
+        </button>
       </header>
       <div className="glass-container">
         <div className="glass-content" ref={chatContainerRef}>
@@ -183,9 +139,7 @@ const Emo = () => {
         <div className="message-input">
           <input
             onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                sendMessage();
-              }
+              if (e.key === "Enter") sendMessage();
             }}
             ref={userInputRef}
             type="text"
@@ -200,4 +154,4 @@ const Emo = () => {
   );
 };
 
-export default Emo;
+export default Login;
