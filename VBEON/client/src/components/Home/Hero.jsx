@@ -1,26 +1,44 @@
 import "./Hero.css"
-import minimize from "../assets/Vector.svg"
-import React, { useState } from "react";
+import minimize from "../../assets/Vector.svg"
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import store from "../Redux/Redux";
+import api from "../../api.jsx"
+import axios from "axios";
 // Placeholder images/icons
 const Hero = () => {
     const [isHidden , setIsHidden] = useState(false);
 
+    const [channels , setChannels] = useState([]);
+    const [selectedServer, setSelectedServer] = useState(null);
     const serverData = useSelector((store)=>store.User );
-    console.log("That's a server data " , serverData);
-    
+
     const min = ()=>{
           setIsHidden(!isHidden);
     }
+
+    const handleServerClick = async (server)=>{
+      setSelectedServer(server);
+      try{
+        let res = await axios.get(`${api.GET_CHANNEL}${server._id}`);
+
+       if(Array.isArray(res.data.channelInfo)){
+        setChannels(res.data.channelInfo);
+       }else{
+        setChannels([]);
+       }
+      }catch(err){
+        console.log("Error fetching channels:", err);
+        setChannels([]);
+      }
+      }
+      
   return <>
     <div className="dashboard">
       {/* SERVER LIST (Far Left) */}
       <nav className="server-list">
         <ul>
-          <li onClick={min} className="server-icon home-icon">🏠</li>
-          {/* {serverData.user.servers.map((serve , index)=>{return <li onClick={()=>{}} className="server-icon" key={index}>{serve}</li>})}; */}
-          {serverData.user.servers.}
+          <li onClick={()=>{ setSelectedServer(null); min()}} className="server-icon home-icon">🏠</li>
+          {serverData.user.servers.map((server , index)=>{return <button className="server-icon" key={index} onClick={()=>handleServerClick(server)}>{server.servername[0]}</button>})}
         </ul>
       </nav>
 
@@ -35,17 +53,19 @@ const Hero = () => {
           <div className="channel-group">
             <h3>TEXT CHANNELS</h3>
             <ul>
-              <li># general</li>
-              <li># random</li>
-              <li># announcements</li>
+              {channels.map((channel , index)=>{
+                return <li key={index}>  {channel.type == "text" ? `😊 ${channel.channelname}` : ""}
+                </li>
+              })}
             </ul>
           </div>
 
           <div className="channel-group">
             <h3>VOICE CHANNELS</h3>
             <ul>
-              <li>🐼 Lobby</li>
-              <li>🐼 Gaming</li>
+             {channels.map((channel , index)=>{
+              return <li key={index}> {channel.type == "voice" ? `🐼 ${channel.channelname}` : ""} </li>
+             })}
             </ul>
           </div>
         </div>

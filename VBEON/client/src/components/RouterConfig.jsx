@@ -2,7 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import LandingPage from "./nonAuthenticatePage/LandingPage.jsx";
 import Emo from "./nonAuthenticatePage/Emo.jsx";
 import Login from "./nonAuthenticatePage/login.jsx";
-import Hero from "./Hero.jsx";
+import Hero from "./Home/Hero.jsx";
 
 let RouterConfig = ()=>{
     return <>

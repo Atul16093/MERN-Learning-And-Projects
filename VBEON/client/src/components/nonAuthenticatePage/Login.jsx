@@ -88,7 +88,6 @@ const Login = () => {
                                 email : userData.email,
                                 password : userData.password
                             });
-                            // console.log(res);
                             /*
                             const mailToken = res.data.user.mailToken;
                             if(mailToken){
@@ -100,8 +99,7 @@ const Login = () => {
                             }
                             */
                           //  console.log(res.data.message);
-                          //  console.log(res.data.user.mailToken);
-                           
+                          Cookies.set("token" , res.data.user.mailToken , {expires : 7 , path : "/"});
                             dispatch(setUser({
                               user : res.data.user,
                               message : res.data.message,
