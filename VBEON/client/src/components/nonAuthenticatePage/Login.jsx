@@ -88,7 +88,7 @@ const Login = () => {
                                 email : userData.email,
                                 password : userData.password
                             });
-                            console.log(res);
+                            // console.log(res);
                             /*
                             const mailToken = res.data.user.mailToken;
                             if(mailToken){
@@ -99,7 +99,14 @@ const Login = () => {
                                 Cookies.set("userId" , userId , {expires : 7 , path : "/"});
                             }
                             */
-                            dispatch(setUser({payload : res.data.user}))
+                          //  console.log(res.data.message);
+                          //  console.log(res.data.user.mailToken);
+                           
+                            dispatch(setUser({
+                              user : res.data.user,
+                              message : res.data.message,
+                              token   : res.data.user.mailToken,
+                            }));
                             setChatHistory((prev) => [
                                 ...prev,
                                 { sender: "assistant", text: "Login successful!" }

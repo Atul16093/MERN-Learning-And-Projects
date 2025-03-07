@@ -1,13 +1,15 @@
 import "./Hero.css"
 import minimize from "../assets/Vector.svg"
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
+import store from "../Redux/Redux";
 // Placeholder images/icons
-const SERVER_ICON = "https://via.placeholder.com/40/ffffff/000000?text=S";
-const USER_AVATAR = "https://via.placeholder.com/40/ffffff/000000?text=U";
-
 const Hero = () => {
     const [isHidden , setIsHidden] = useState(false);
 
+    const serverData = useSelector((store)=>store.User );
+    console.log("That's a server data " , serverData);
+    
     const min = ()=>{
           setIsHidden(!isHidden);
     }
@@ -17,16 +19,8 @@ const Hero = () => {
       <nav className="server-list">
         <ul>
           <li onClick={min} className="server-icon home-icon">🏠</li>
-          <li className="server-icon">
-            <img src={SERVER_ICON} alt="Server 1" />
-          </li>
-          <li className="server-icon">
-            <img src={SERVER_ICON} alt="Server 2" />
-          </li>
-          <li className="server-icon">
-            <img src={SERVER_ICON} alt="Server 3" />
-          </li>
-          <li className="server-icon add-server">+</li>
+          {/* {serverData.user.servers.map((serve , index)=>{return <li onClick={()=>{}} className="server-icon" key={index}>{serve}</li>})}; */}
+          {serverData.user.servers.}
         </ul>
       </nav>
 
@@ -57,7 +51,7 @@ const Hero = () => {
         </div>
 
         <div className="user-info">
-          <img src={USER_AVATAR} alt="User" />
+          <img src={" "} alt="User" />
           <div className="user-details">
             <p className="username">Username</p>
             <p className="status">Online</p>
