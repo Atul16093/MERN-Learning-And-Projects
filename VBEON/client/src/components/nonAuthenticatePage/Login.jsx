@@ -120,6 +120,7 @@ const Login = () => {
                             ...prev,
                             { sender: "assistant", text: errorMsg }
                           ]);
+                          setStep(0);
                         }
                     }
                     login();
