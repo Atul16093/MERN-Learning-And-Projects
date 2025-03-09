@@ -1,34 +1,42 @@
 import mongoose from "mongoose";
-
-const messageSchema = new mongoose.Schema({
-    sender : {
-        type : mongoose.Schema.Types.ObjectId,
-        ref : "User",
-        required : true,
+const messageSchema = new mongoose.Schema(
+  {
+    content: {
+      type: String,
+      required: true,
     },
-    receiver :{
-        type : mongoose.Schema.Types.ObjectId,
-        ref : "User",
-        required : true,
+    sender: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
-      audioUrl: {
-        type: String,
-        required: false, 
-      },
-      timestamp: {
-        type: Date,
-        default: Date.now,
-      },
-      read: {
-        type: Boolean,
-        default: false,
-      },
+    receiver: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      // required: true,
     },
-    {
-      timestamps: true,
-    }
+    audioUrl: {
+      type: String,
+      required: false,
+    },
+    channelId : {
+       type : mongoose.Schema.Types.ObjectId,
+       ref  : "Channel"
+    },
+    timestamp: {
+      type: Date,
+      default: Date.now,
+    },
+    read: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  {
+    timestamps: true,
+  }
 );
 
-const Message = mongoose.model("Message" , messageSchema);
+const Message = mongoose.model("Message", messageSchema);
 
 export default Message;

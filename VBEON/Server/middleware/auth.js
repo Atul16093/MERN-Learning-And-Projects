@@ -5,10 +5,10 @@ dotenv.config();
 
 export const auth = async (request , response , next)=>{
     try{
-    let tokenData = jwt.verify(request.cookies.token , process.env.KEY)
-    if(tokenData){
-        console.log("This is from auth " , tokenData);
+        console.log("This is your token",request.cookies.token);
         
+    let tokenData = jwt.verify(request.cookies.token , process.env.KEY)
+    if(tokenData){        
      let userStatus = await User.findOne({email : tokenData.data})
      console.log('User status ',userStatus);
      
@@ -34,10 +34,3 @@ export const auth = async (request , response , next)=>{
         
     }
 }
-// export const sessionAuth = (request , response , next)=>{
-//     if(request.session.isLoggedIn){
-//         next();
-//     }else{
-//         return response.status(401).json({message : "login first"});
-//     }
-// }

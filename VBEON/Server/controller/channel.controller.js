@@ -128,15 +128,13 @@ export const updateRole = async(request , response , next)=>{
 }
 export const getChannel = async(request , response , next)=>{
     try{
-        let {serverId} = request.params;
-        console.log(serverId);
-        
+        let {serverId} = request.params;       
         let serverStatus = await Channel.findOne({serverId});
         if(!serverStatus){
             return response.status(400).json({message : "Server not found"});
         }
         let channelInfo = await Channel.find({serverId});
-    
+        
         return response.status(200).json({message : "Success" , channelInfo} );
     }catch(err){
         console.log("Error in getChannel controller " , err);

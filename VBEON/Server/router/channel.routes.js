@@ -18,5 +18,6 @@ router.put("/:channelId/ucn" ,auth, updateChannelName)
 
 router.put("/:channelId/updaterole" , auth , updateRole);
 //Get channel
-router.get("/:serverId/channel" ,auth, getChannel)
+// router.get("/:serverId" ,auth, getChannel)
+router.get("/:serverId" , getChannel)
 export default router;

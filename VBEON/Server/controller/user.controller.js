@@ -88,7 +88,15 @@ export const login = async (request, response, next) => {
     let { email, password } = request.body;
     // console.log(email , password);
 
-    let emailStatus = await User.findOne({ email });
+    let emailStatus = await User.findOne({ email }).populate({
+      path: "servers",
+      populate: [
+        { path: "owner", select: "username email" }, // Populating owner details
+        { path: "members.user", select: "username email status" }, // Populating members
+        { path: "channels", select: "name" }, // Populating channels
+        { path: "inviteLinks", select: "code expiresAt" } // Populating invite links
+      ]
+    });
     //User authecation
     if (emailStatus && emailStatus.OTP == null) {
       let encrypted = emailStatus.password;
@@ -102,7 +110,7 @@ export const login = async (request, response, next) => {
         let id = emailStatus._id;
         let info = token.idToken(id);
         response.cookie("id", info);
-        return response.status(200).json({ message: "Login successfully " , user : {username : emailStatus.username, email : emailStatus.email ,servers : emailStatus.servers, status : emailStatus.status , mailToken : data , userId : info}});
+        return response.status(200).json({ message: "Login successfully " , user : {id : emailStatus._id, username : emailStatus.username, email : emailStatus.email ,servers : emailStatus.servers, status : emailStatus.status , mailToken : data , userId : info}});
       } else {
         return response
           .status(401)
@@ -305,3 +313,6 @@ export const getProfile = async (request , response , next)=>{
 export const view = (request, response , next)=>{
   response.render("form.ejs")
 }
+
+// -----------------------------------------------------------------------------------------
+

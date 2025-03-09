@@ -20,9 +20,12 @@ const channelSchema = new mongoose.Schema({
         enum: ["admin", "moderator", "member"], 
         default: ["admin", "moderator"] 
     },
-    messages : {
-        type : [String]
-    }
+    messages: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Message",
+        },
+      ],
 })
 
 const Channel = mongoose.model("Channel" , channelSchema);
