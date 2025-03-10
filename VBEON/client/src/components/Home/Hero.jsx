@@ -1,10 +1,12 @@
 import "./Hero.css"
 import minimize from "../../assets/Vector.svg"
+import Plus from "../../assets/Plus.svg";
 import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import api from "../../api.jsx"
 import axios from "axios";
 import socket from "../../socket/SocketUrl.jsx"
+import CreateChannel from "./CreateChannel.jsx";
 const Hero = () => {
     const [isHidden , setIsHidden] = useState(false);
     const [channels , setChannels] = useState([]);
@@ -13,12 +15,28 @@ const Hero = () => {
     const [messages , setMessages] = useState([]);
     const serverData = useSelector((store)=>store.User ); 
     const user_id = serverData.user.id;
-    
+    const newMessageRef = useRef();
+    const chatContainerRef = useRef(null);
+    const [addChannelPopup , setAddChannelPopup] = useState(false)
+
+    //Handle data from child 
+
+    const handleDataFromChild = (data)=>{
+          setAddChannelPopup(data);
+    }
     //Setup the socket io...
     useEffect(()=>{
       socket.emit("userConnected" , user_id);
     },[user_id]);
     
+    //This useEffect use for taking the container to current chat
+
+    useEffect(() => {
+      if (chatContainerRef.current) {
+        chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+      }
+    }, [messages]);
+
     useEffect(()=>{ 
       if(!selectedChannel) return;
       
@@ -61,9 +79,13 @@ const Hero = () => {
             console.log("error in handlechannel click", err);
           }
           socket.emit("joinChannel" , {channelId : channel._id , user_id});
-    };
+          // setTimeout(()=>{
+          //   if(chatContainerRef.current){
+          //     chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+          //   }
+          // },300)
+        };
 
-    const newMessageRef = useRef();
 
     const sendMessage = ()=>{
       if(!newMessageRef.current.value.trim() || !selectedChannel) return ;
@@ -73,12 +95,20 @@ const Hero = () => {
           content : newMessageRef.current.value, 
           channelId : selectedChannel._id,
       };
-
+      
       socket.emit("sendMessage" , messageData);
       setMessages((prevMessages)=>[...prevMessages , messageData]);
       newMessageRef.current.value = "";
     }
+
+    const handleAddChannel = ()=>{
+          setAddChannelPopup(!addChannelPopup);
+          console.log(addChannelPopup);
+          
+    }
+
   return <>
+  
     <div className="dashboard">
       {/* SERVER LIST (Far Left) */}
       <nav className="server-list">
@@ -97,7 +127,10 @@ const Hero = () => {
 
         <div className="channels">
           <div className="channel-group">
-            <h3>TEXT CHANNELS +</h3>
+            <div>
+            <span className="text-channel">TEXT CHANNELS </span>
+            <button className="plus-btn"><img onClick={handleAddChannel} className="plus" src={Plus} alt="" /></button>
+            </div>
             <ul>
               {channels.map((channel , index)=>{
                 return <li key={index} onClick={()=>{handleChannelClick(channel)}}> {channel.type == "text" ? `😊 ${channel.channelname}` : ""}
@@ -128,6 +161,11 @@ const Hero = () => {
 
       {/* MAIN CONTENT (Chat) */}
       <main className="main">
+       {addChannelPopup && <div className="modal-overlay"> 
+          <div className="modal-content">
+             <CreateChannel sendDataToParent = {handleDataFromChild} />
+              </div>
+                </div> }
                 {selectedChannel ? (
                     <>
                         {/* Channel Header */}
@@ -137,7 +175,7 @@ const Hero = () => {
 
                         {/* Chat Area */}
                         <div className="chat-area">
-                        <div className="messages">
+                        <div className="messages" ref={chatContainerRef}>
                           {messages.map((msg, index) => {
                             const isSentByUser = msg.sender._id === user_id;
                             return (
@@ -167,6 +205,7 @@ const Hero = () => {
                 ) : (
                     <p className="select-channel-message">Select a channel to start chatting</p>
                 )}
+                
       </main>
     </div>
   </>
