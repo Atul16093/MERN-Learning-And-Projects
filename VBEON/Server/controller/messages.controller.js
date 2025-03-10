@@ -3,6 +3,7 @@ import Message from "../models/message.model.js";
 
 export const storeMessages = async (request , response , next)=>{
     try {
+        
         const { content, senderId, channelId } = request.body;
     
         // Validate inputs
