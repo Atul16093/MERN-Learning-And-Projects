@@ -1,11 +1,27 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./CreateChannel.css"
-const CreateChannel = ({sendDataToParent})=>{
-    const [status , setStatus] = useState();
+import axios from "axios";
+import api from "../../api";
+const CreateChannel = ({sendDataToParent , serverId})=>{
+    const [status , setStatus] = useState();    
+    const channelNameRef = useRef();
+    const textChannelRef = useRef();
+    const voiceChannelref = useRef();
 
+    const handleSubmit = async()=>{
+        try{        
+        await axios.post(`${api.CREATE_CHANNEL}/${serverId}/create` , {channelname : channelNameRef.current.value , type : textChannelRef.current.value},{
+        withCredentials : true //it ensure cookies are send and the creditaial true help us to get the cookies from the browser storage
+       });
+        }catch(err){
+          console.log("Error in handleSubmit function",err);
+          
+        }
+       
+      }
     const handleCancel = ()=>{
         setStatus(false);
-        sendDataToParent(status);
+        sendDataToParent({status , serverId});
     }
     return <>
         <div className="modal-overlay">
@@ -15,12 +31,10 @@ const CreateChannel = ({sendDataToParent})=>{
 
         <div className="channel-type-section">
           <label>
-            <input
+            <input ref={textChannelRef}
               type="radio"
               name="channelType"
-              value="text"
-            //   checked={channelType === "text"}
-            />
+              value="text"/>
             <div className="channel-type-info">
               <h4 style={{marginLeft : "30px"}}>Text</h4>
               <p>Send messages, images, GIFs, emoji, opinions</p>
@@ -28,13 +42,10 @@ const CreateChannel = ({sendDataToParent})=>{
           </label>
 
           <label>
-            <input
+            <input ref={voiceChannelref}
               type="radio"
               name="channelType"
-              value="voice"
-            //   checked={channelType === "voice"}
-            //   onChange={(e) => setChannelType(e.target.value)}
-            />
+              value="voice" />
             <div className="channel-type-info">
               <h4>Voice</h4>
               <p>Hang out together with voice, video, and screen share</p>
@@ -46,22 +57,16 @@ const CreateChannel = ({sendDataToParent})=>{
           <label htmlFor="channelName">CHANNEL NAME</label>
           <div className="channel-name-input">
             <span>#</span>
-            <input
+            <input ref={channelNameRef}
               id="channelName"
-              type="text"
-            //   value={channelName}
-            //   onChange={(e) => setChannelName(e.target.value)}
-            />
+              type="text"/>
           </div>
         </div>
 
         <div className="private-channel-toggle">
           <label>
             <input
-              type="checkbox"
-            //   checked={isPrivate}
-            //   onChange={() => setIsPrivate(!isPrivate)}
-            />
+              type="checkbox"/>
             Private Channel
           </label>
           <p className="description">
@@ -73,7 +78,7 @@ const CreateChannel = ({sendDataToParent})=>{
           <button onClick={()=>{handleCancel()}} className="cancel-btn" >
             Cancel
           </button>
-          <button className="create-btn" >
+          <button onClick={()=>{handleSubmit(); handleCancel()}} className="create-btn" >
             Create Channel
           </button>
         </div>

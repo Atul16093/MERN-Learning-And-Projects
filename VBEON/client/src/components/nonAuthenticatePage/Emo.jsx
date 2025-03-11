@@ -215,7 +215,7 @@ const Emo = ()=>{
       <div className="glass-container">
         <div className="glass-content" ref={chatContainerRef}>
         {chatHistory.map((msg , index)=>{ return <div key={index} className={`assistant-bubble ${msg.sender === "user" ? "user" : ""}`}> 
-            <p>{msg.text} </p>
+            <p style={{color : "white"}}>{msg.text} </p>
         </div>
     })}
 

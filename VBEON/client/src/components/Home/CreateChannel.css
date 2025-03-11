@@ -86,19 +86,19 @@
   .channel-name-input {
     display: flex;
     align-items: center;
-    background-color: #2f3136;
+    background-color: #ffffff;
     border-radius: 4px;
     overflow: hidden;
   }
   .channel-name-input span {
     padding: 0 8px;
-    color: #b9bbbe;
+    color: #000000;
     font-size: 16px;
   }
   .channel-name-input input {
     border: none;
     background: none;
-    color: #dcddde;
+    color: #000000;
     padding: 8px;
     outline: none;
     width: 100%;

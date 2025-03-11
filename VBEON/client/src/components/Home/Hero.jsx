@@ -7,23 +7,39 @@ import api from "../../api.jsx"
 import axios from "axios";
 import socket from "../../socket/SocketUrl.jsx"
 import CreateChannel from "./CreateChannel.jsx";
+import CreateServer from "./CreateServer.jsx";
 const Hero = () => {
     const [isHidden , setIsHidden] = useState(false);
     const [channels , setChannels] = useState([]);
     const [selectedServer, setSelectedServer] = useState(null);
     const [selectedChannel, setSelectedChannel] = useState(null);
     const [messages , setMessages] = useState([]);
+    const [server , setServer] = useState();
     const serverData = useSelector((store)=>store.User ); 
+    const [newServer , setNewServer] = useState(serverData.user.servers);
+    
     const user_id = serverData.user.id;
     const newMessageRef = useRef();
     const chatContainerRef = useRef(null);
     const [addChannelPopup , setAddChannelPopup] = useState(false)
+    const [addServerPopup , setAddServerPopup]   = useState(false);
 
     //Handle data from child 
-
-    const handleDataFromChild = (data)=>{
-          setAddChannelPopup(data);
+    const handleDataFromChild = async(data)=>{
+      try{
+          setAddChannelPopup(data.data );
+          let res = await axios.get(`${api.GET_CHANNEL}${data.serverId}` , {withCredentials : true});
+          console.log(res.data.channelInfo);
+          
+           setChannels(res.data.channelInfo);    
+      }catch(err){
+        console.log("Error in handleDataFromChild" , err);
+        
+      }
     }
+    useEffect(()=>{
+
+    },[]);
     //Setup the socket io...
     useEffect(()=>{
       socket.emit("userConnected" , user_id);
@@ -61,7 +77,7 @@ const Hero = () => {
       setSelectedChannel(null);
       setMessages([]);
       try{
-        let res = await axios.get(`${api.GET_CHANNEL}${server._id}`);
+        let res = await axios.get(`${api.GET_CHANNEL}${server._id}` , {withCredentials : true});
         setChannels(Array.isArray(res.data.channelInfo) ? res.data.channelInfo : []);
       }catch(err){
         console.log("Error fetching channels:", err);
@@ -79,13 +95,7 @@ const Hero = () => {
             console.log("error in handlechannel click", err);
           }
           socket.emit("joinChannel" , {channelId : channel._id , user_id});
-          // setTimeout(()=>{
-          //   if(chatContainerRef.current){
-          //     chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
-          //   }
-          // },300)
         };
-
 
     const sendMessage = ()=>{
       if(!newMessageRef.current.value.trim() || !selectedChannel) return ;
@@ -102,11 +112,24 @@ const Hero = () => {
     }
 
     const handleAddChannel = ()=>{
-          setAddChannelPopup(!addChannelPopup);
-          console.log(addChannelPopup);
-          
+          setAddChannelPopup(!addChannelPopup);          
     }
 
+    const handleCreateServer = async()=>{
+         setAddServerPopup(true);
+    }
+
+    const handleByServer = (data)=>{
+        setAddServerPopup(data)
+    }
+    const handleCreateData = async (data)=>{
+      const res = await axios.get(`${api.ALL_SERVER}${serverData.user.id}`, {withCredentials : true});
+      setNewServer(res.data.detail.servers);
+        console.log("Handle create data " , data);
+        setServer(data)
+    }
+    useEffect(()=>{
+    }, []);
   return <>
   
     <div className="dashboard">
@@ -114,7 +137,8 @@ const Hero = () => {
       <nav className="server-list">
         <ul>
           <li onClick={()=>{ setSelectedServer(null); min()}} className="server-icon home-icon">🏠</li>
-          {serverData.user.servers.map((server , index)=>{return <button className="server-icon" key={index} onClick={()=>handleServerClick(server)}>{server.servername[0]}</button>})}
+          {newServer.map((server , index)=>{return <button className="server-icon" key={index} onClick={()=>handleServerClick(server)}>{server.servername[0]}</button>})}  
+          <li onClick={handleCreateServer} className="server-icon"><img  src={Plus} alt="add Server" style={{width : "20px" , height : "20px"}} /></li>
         </ul>
       </nav>
 
@@ -129,7 +153,8 @@ const Hero = () => {
           <div className="channel-group">
             <div>
             <span className="text-channel">TEXT CHANNELS </span>
-            <button className="plus-btn"><img onClick={handleAddChannel} className="plus" src={Plus} alt="" /></button>
+            {(serverData.user.servers[0].owner._id == user_id) ? 
+            <button   onClick={handleAddChannel} style={{outline : "none" , marginLeft : "20px",  width : "60px"}}  className="plus-btn">{selectedServer == null ? "" : <img className="plus" src={Plus} alt="" />}</button>:""}
             </div>
             <ul>
               {channels.map((channel , index)=>{
@@ -163,9 +188,11 @@ const Hero = () => {
       <main className="main">
        {addChannelPopup && <div className="modal-overlay"> 
           <div className="modal-content">
-             <CreateChannel sendDataToParent = {handleDataFromChild} />
+             <CreateChannel sendDataToParent = {handleDataFromChild} serverId={selectedServer._id} />
               </div>
                 </div> }
+
+      {addServerPopup && <CreateServer sendDataToParent = {handleByServer} sendDataToHero={handleCreateData}  />}
                 {selectedChannel ? (
                     <>
                         {/* Channel Header */}
@@ -179,11 +206,11 @@ const Hero = () => {
                           {messages.map((msg, index) => {
                             const isSentByUser = msg.sender._id === user_id;
                             return (
-                              <div key={index} className={`message-container ${isSentByUser ? "sent" : "received"}`}>
-                                <p className="message-username">{msg.sender.username }</p> 
+                              <div key={index} className={`message-container ${isSentByUser ? "sent " : "received "}`}>
+                                <p className="message-username ">{msg.sender.username }</p> 
                                 {/* Message Bubble */}
                                 <div className="message-bubble">
-                                  <p className="message-text">{msg.content}</p>
+                                  <p className="message-text text-dark ">{msg.content}</p>
                                 </div>
                               </div>
                             );

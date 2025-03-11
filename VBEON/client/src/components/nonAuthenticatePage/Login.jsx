@@ -99,12 +99,15 @@ const Login = () => {
                             }
                             */
                           //  console.log(res.data.message);
-                          Cookies.set("token" , res.data.user.mailToken , {expires : 7 , path : "/"});
+                          Cookies.set("token" , res.data.user.mailToken , {expires : 7 ,secure : false, path : "/"});
+                          console.log(Cookies.get("token"));;
+                          
                             dispatch(setUser({
                               user : res.data.user,
                               message : res.data.message,
                               token   : res.data.user.mailToken,
                             }));
+                          Cookies.set("id", res.data.user.userId , {expires : 7 , path : "/"});
                             setChatHistory((prev) => [
                                 ...prev,
                                 { sender: "assistant", text: "Login successful!" }
@@ -136,7 +139,7 @@ const Login = () => {
       <div className="glass-container">
         <div className="glass-content" ref={chatContainerRef}>
         {chatHistory.map((msg , index)=>{ return <div key={index} className={`assistant-bubble ${msg.sender === "user" ? "user" : ""}`}> 
-            <p>{msg.text} </p>
+            <p style={{color : "white"}}>{msg.text} </p>
         </div>
     })}
 
