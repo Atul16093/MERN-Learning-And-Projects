@@ -6,7 +6,8 @@ import {
      leave,
      deleteServer,
      updateServerName,
-     getServerDetail
+     getServerDetail,
+     allServer,
     } from "../controller/server.controller.js";
 import { createInvite } from "../controller/Invite.controller.js";
 import { body } from "express-validator";
@@ -34,4 +35,7 @@ router.put("/:serverId/usn" ,auth , updateServerName);
 
 //Member detail
 router.get("/search-server/:serverId" ,auth , getServerDetail);
+
+router.get("/all-server/:ownerId" ,auth , allServer);
+
 export default router;

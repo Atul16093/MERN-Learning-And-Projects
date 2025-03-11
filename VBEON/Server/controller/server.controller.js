@@ -7,6 +7,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 dotenv.config();
 import { validationResult } from "express-validator";
+import { request, response } from "express";
 export const createServer = async (request , response , next)=>{
         try{
             let errors = validationResult(request);
@@ -172,5 +173,19 @@ export const getServerDetail = async(request , response , next)=>{
     }catch(err){
         console.log("Error in members controller " , err);
         return response.status(500).json({ message: "Internal server error" });
+    }
+}
+
+export const allServer = async (request , response , next)=>{
+    try{
+        const {ownerId} = request.params;
+        const detail = await User.findOne({_id : ownerId}).populate("servers")
+        if(!detail){
+            return response.status(404).json({message : "Detail not found"});
+        }
+        return response.status(200).json({message : "Successfully fetch all the detail", detail})
+    }catch(err){
+        console.log("Error in allServer",err);
+        return response.status(500).json({message : "Internal server error"});
     }
 }

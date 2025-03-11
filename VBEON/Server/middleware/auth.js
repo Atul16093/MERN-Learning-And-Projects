@@ -5,7 +5,7 @@ dotenv.config();
 
 export const auth = async (request , response , next)=>{
     try{
-        console.log("This is your token",request.cookies.token);
+        console.log("This is your token",request.headers.token);
         
     let tokenData = jwt.verify(request.cookies.token , process.env.KEY)
     if(tokenData){        
