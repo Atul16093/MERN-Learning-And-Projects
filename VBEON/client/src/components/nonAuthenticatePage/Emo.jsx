@@ -3,6 +3,7 @@ import "./Emo.css"
 import axios from "axios";
 import api from "../../api.jsx";
 import Cookies from "js-cookie";
+import {toast, ToastContainer} from "react-toastify";
 import { useNavigate } from "react-router-dom";
 const Emo = ()=>{
   //Count the step for tracking the user action
@@ -153,6 +154,7 @@ const Emo = ()=>{
                   status: userData.status,
                   dob: userData.dob
                 });
+                toast.success("Registration Success ! Now Please verify your email...")
                 console.log("Registration successful:", res.data);
 
                 //Here we're getting the token from the backend and set that token into the cookies 
@@ -165,6 +167,7 @@ const Emo = ()=>{
                   Cookies.set("emailVerifyToken", emailToken, { expires: 7, path: "/" });
                 }
               } catch (err) {
+                toast.error("Oops! something went wrong...")
                 console.log("Error in Emo.jsx register function", err);
                 const errMsg = err.response.data.message || "Invalid Information";
                 setChatHistory((prev)=>[...prev , {sender : "assistant" , text : errMsg}]);
@@ -177,17 +180,16 @@ const Emo = ()=>{
             
             const verifyEmail = async ()=>{
               try{
-                
                 const res = await axios.post(api.EMAILVERIFICATION , {
                   OTP : userData.OTP,
                 },{ withCredentials: true });
-                
                 setChatHistory((prev) => [
                   ...prev,
                   { sender: "assistant", text: res.data.message || "Email verified successfully!" }
                 ]);
-                
+                toast.success("Email verified successfully...");
               }catch(err){
+                toast.error("Invalid OTP! Please try again...");
                 console.log("Error in verifyOtp fucntion" , err);
                 const errorMsg =
                 err.response.data.message || "Incorrect OTP. Please try again.";
@@ -207,6 +209,7 @@ const Emo = ()=>{
             navigate("/login");
         }
     return <>
+     <ToastContainer/>
      <div className="glass-bg">
         <header className="glass-header">
           <h1 className="signup-btn">Emo</h1>

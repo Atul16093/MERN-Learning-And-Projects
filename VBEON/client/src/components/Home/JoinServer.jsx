@@ -1,17 +1,24 @@
 import { useState } from "react";
 import "./JoinServer.css";
+import axios from "axios";
+import api from "../../api";
 
 const JoinServer = ({ closeStatus , popUpClose}) => {
     const [inviteLink, setInviteLink] = useState("");
     const [close , setClose]    =  useState();
+     console.log(inviteLink);
      
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (!inviteLink) {
             alert("Please enter an invite link.");
             return;
         }
-        console.log("Joining server with invite:", inviteLink);
+        //Getting the last invite code from here 
+        const code = inviteLink.substring(34 , 42)
+        const res = await axios.post(`${api.JOIN_SERVER}${code}` ,{}, {withCredentials : true})
+        console.log(res);
+        closePopup();
     };
     const handleClose = ()=>{
         setClose(false);
@@ -38,7 +45,7 @@ const JoinServer = ({ closeStatus , popUpClose}) => {
                         type="text"
                         id="invite-link"
                         className="invite-input"
-                        placeholder="https://discord.gg/example"
+                        placeholder="http://vbeon.gg/example"
                         value={inviteLink}
                         onChange={(e) => setInviteLink(e.target.value)}
                         required
@@ -46,8 +53,8 @@ const JoinServer = ({ closeStatus , popUpClose}) => {
 
                     <p className="invite-examples">INVITES SHOULD LOOK LIKE</p>
                     <p className="example-link">hTKzmak</p>
-                    <p className="example-link">https://discord.gg/hTKzmak</p>
-                    <p className="example-link">https://discord.gg/wumpus-friends</p>
+                    <p className="example-link">http://vbeon.gg/hTKzmak</p>
+                    <p className="example-link">http://vbeon.gg/wumpus-friends</p>
 
                     <div className="discover-section">
                         <span className="discover-icon">✅</span>
@@ -59,7 +66,7 @@ const JoinServer = ({ closeStatus , popUpClose}) => {
 
                     <div className="buttons">
                         <button type="button" className="back-btn" onClick={handleClose}>Back</button>
-                        <button type="submit" className="join-btn">Join Server</button>
+                        <button type="submit" className="join-btn" >Join Server</button>
                     </div>
                 </form>
             </div>

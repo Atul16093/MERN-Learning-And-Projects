@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import api from "../../api.jsx";
 import Cookies from "js-cookie";
+import {toast, ToastContainer} from "react-toastify";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../Redux/UserSlice.jsx";
 const Login = () => {
@@ -112,9 +113,10 @@ const Login = () => {
                                 ...prev,
                                 { sender: "assistant", text: "Login successful!" }
                               ]);
-
+                              toast.success("Login Success...");
                               navigate("/home")
                         }catch(err){
+                            toast.error("Invalid Credentials...")
                             console.log("Error in Login function ", err);    
                             const errorMsg =
                             err.response.data.message ||
@@ -131,6 +133,7 @@ const Login = () => {
             } , [step, userData, steps.length]);
     
   return <> 
+         <ToastContainer/>
          <div className="glass-bg">
         <header className="glass-header">
           <h1 className="signup-btn">Emo</h1>
