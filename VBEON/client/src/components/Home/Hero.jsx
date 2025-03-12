@@ -153,8 +153,9 @@ const Hero = () => {
           <div className="channel-group">
             <div>
             <span className="text-channel">TEXT CHANNELS </span>
-            {(serverData.user.servers[0].owner._id == user_id) ? 
-            <button   onClick={handleAddChannel} style={{outline : "none" , marginLeft : "20px",  width : "60px"}}  className="plus-btn">{selectedServer == null ? "" : <img className="plus" src={Plus} alt="" />}</button>:""}
+            {/* {(serverData.user.servers[0].owner._id == user_id) ?  */}
+            <button   onClick={handleAddChannel} style={{outline : "none" , marginLeft : "20px",  width : "60px"}}  className="plus-btn">{selectedServer == null ? "" : <img className="plus" src={Plus} alt="" />}</button>
+            {/* :""} */}
             </div>
             <ul>
               {channels.map((channel , index)=>{

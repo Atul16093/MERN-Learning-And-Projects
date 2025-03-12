@@ -1,9 +1,10 @@
 import { useState } from "react";
 import "./JoinServer.css";
 
-const JoinServer = ({ onClose }) => {
+const JoinServer = ({ closeStatus , popUpClose}) => {
     const [inviteLink, setInviteLink] = useState("");
-
+    const [close , setClose]    =  useState();
+     
     const handleSubmit = (e) => {
         e.preventDefault();
         if (!inviteLink) {
@@ -12,11 +13,18 @@ const JoinServer = ({ onClose }) => {
         }
         console.log("Joining server with invite:", inviteLink);
     };
-
+    const handleClose = ()=>{
+        setClose(false);
+        closeStatus(close);
+    }
+    const closePopup = ()=>{
+        setClose(false);
+        popUpClose()
+    }
     return (
         <div className="modal-overlay">
             <div className="modal-container">
-                <button className="close-btn" onClick={onClose}>×</button>
+                <button className="close-btn" onClick={closePopup}>×</button>
                 <h2>Join a Server</h2>
                 <p className="modal-description">
                     Enter an invite below to join an existing server
@@ -50,7 +58,7 @@ const JoinServer = ({ onClose }) => {
                     </div>
 
                     <div className="buttons">
-                        <button type="button" className="back-btn" onClick={onClose}>Back</button>
+                        <button type="button" className="back-btn" onClick={handleClose}>Back</button>
                         <button type="submit" className="join-btn">Join Server</button>
                     </div>
                 </form>
