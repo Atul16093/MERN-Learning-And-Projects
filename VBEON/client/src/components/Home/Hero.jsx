@@ -155,9 +155,10 @@ const Hero = () => {
             <div>
             <span className="text-channel">TEXT CHANNELS </span>
             {(serverData.user.servers?.length > 0 &&serverData.user.servers[0].owner._id == user_id) ? 
-            <button   onClick={handleAddChannel} style={{outline : "none" , marginLeft : "20px",  width : "60px"}}  className="plus-btn">{selectedServer == null ? "" : <img className="plus" src={Plus} alt="" />}</button>
-            :""}
+            <button   onClick={handleAddChannel} style={{outline : "none" , marginLeft : "10px",  width : "60px"}}  className="plus-btn">{selectedServer == null ? "" : <img className="plus" src={Plus} alt="" />}</button>
+            :""}<span> ⋮</span>
             </div>
+
             <ul>
               {channels.map((channel , index)=>{
                 return <li key={index} onClick={()=>{handleChannelClick(channel)}}> {channel.type == "text" ? `😊 ${channel.channelname}` : ""}
