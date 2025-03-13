@@ -8,6 +8,9 @@ import axios from "axios";
 import socket from "../../socket/SocketUrl.jsx"
 import CreateChannel from "./CreateChannel.jsx";
 import CreateServer from "./CreateServer.jsx";
+import VerticalDot from "../../assets/VerticalDot.svg";
+import ServerOptions from "./ServerOptions.jsx";
+import InvitePopup from "../InviteSection/InvitePopup.jsx";
 const Hero = () => {
     const [isHidden , setIsHidden] = useState(false);
     const [channels , setChannels] = useState([]);
@@ -23,7 +26,9 @@ const Hero = () => {
     const chatContainerRef = useRef(null);
     const [addChannelPopup , setAddChannelPopup] = useState(false)
     const [addServerPopup , setAddServerPopup]   = useState(false);
-
+    const [serverOptionsPopup , setServerOptionsPopup] = useState(false);
+    //It's for invite popup 
+    const [popupStatus , setPopupStatus] = useState(false);
     //Handle data from child 
     const handleDataFromChild = async(data)=>{
       try{
@@ -123,6 +128,7 @@ const Hero = () => {
         setAddServerPopup(data)
         handleCreateData();
     }
+    //WithCreditals true basically help us to taking the data from the cookies.
     const handleCreateData = async (data)=>{
       const res = await axios.get(`${api.ALL_SERVER}${serverData.user.id}`, {withCredentials : true});
       setNewServer(res.data.detail.servers);
@@ -131,6 +137,21 @@ const Hero = () => {
     }
     useEffect(()=>{
     }, []);
+    const handleOptions = ()=>{      
+        setServerOptionsPopup(!serverOptionsPopup)        
+    }
+    const handleInviteStatus = (data)=>{
+      setPopupStatus(data);
+    }
+    //Handle the invite 
+    const handleInvite = (data)=>{
+      setPopupStatus(data)
+      
+    }
+    const handleClick = (data)=>{
+      console.log("See your clicking status " , data );
+      setServerOptionsPopup(data)
+    }
   return <>
   
     <div className="dashboard">
@@ -154,11 +175,11 @@ const Hero = () => {
           <div className="channel-group">
             <div>
             <span className="text-channel">TEXT CHANNELS </span>
-            {(serverData.user.servers?.length > 0 &&serverData.user.servers[0].owner._id == user_id) ? 
-            <button   onClick={handleAddChannel} style={{outline : "none" , marginLeft : "10px",  width : "60px"}}  className="plus-btn">{selectedServer == null ? "" : <img className="plus" src={Plus} alt="" />}</button>
-            :""}<span> ⋮</span>
+            {(serverData.user.servers.length > 0 && serverData.user.servers[0].owner._id == user_id) ? 
+            <button   onClick={handleAddChannel} style={{outline : "none" ,  width : "43px"}}  className="plus-btn">{selectedServer == null ? "" : <img className="plus" src={Plus} alt="" />}</button>
+            :""}<button onClick={handleOptions} className="plus-btn"  style={{outline : "none" , marginLeft : "1px",  width : "40px"}}> {selectedServer == null ? "" : <img  src={VerticalDot} alt="dot img" style={{width : 25}}/>}</button>
             </div>
-
+              {serverOptionsPopup ? <ServerOptions  inviteStatus={handleInviteStatus}  clickSentToParent={handleClick}   /> : ""}
             <ul>
               {channels.map((channel , index)=>{
                 return <li key={index} onClick={()=>{handleChannelClick(channel)}}> {channel.type == "text" ? `😊 ${channel.channelname}` : ""}
@@ -189,6 +210,9 @@ const Hero = () => {
 
       {/* MAIN CONTENT (Chat) */}
       <main className="main">
+            
+      {popupStatus ? <InvitePopup serverInfo = {selectedServer}  inviteClose = {handleInvite} /> : ""};
+
        {addChannelPopup && <div className="modal-overlay"> 
           <div className="modal-content">
              <CreateChannel sendDataToParent = {handleDataFromChild} serverId={selectedServer._id} />

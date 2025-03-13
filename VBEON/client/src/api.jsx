@@ -7,5 +7,6 @@ export default {
     CREATE_CHANNEL : "http://localhost:5400/channel",
     CREATE_SERVER  : "http://localhost:5400/server/create-server",
     ALL_SERVER     : "http://localhost:5400/server/all-server/",
-    JOIN_SERVER    : "http://localhost:5400/server/join/"
+    JOIN_SERVER    : "http://localhost:5400/server/join/",
+    GENERATE_LINK  : "http://localhost:5400/server/"
 }

@@ -10,15 +10,20 @@ const JoinServer = ({ closeStatus , popUpClose}) => {
      
     const handleSubmit = async (e) => {
         e.preventDefault();
+        try{
         if (!inviteLink) {
             alert("Please enter an invite link.");
             return;
         }
         //Getting the last invite code from here 
-        const code = inviteLink.substring(34 , 42)
+        const code = inviteLink;
         const res = await axios.post(`${api.JOIN_SERVER}${code}` ,{}, {withCredentials : true})
         console.log(res);
         closePopup();
+        }catch(error){
+            console.log("Error in handle submit " , error);
+            
+        }
     };
     const handleClose = ()=>{
         setClose(false);
@@ -45,7 +50,7 @@ const JoinServer = ({ closeStatus , popUpClose}) => {
                         type="text"
                         id="invite-link"
                         className="invite-input"
-                        placeholder="http://vbeon.gg/example"
+                        placeholder="e57e0bc0"
                         value={inviteLink}
                         onChange={(e) => setInviteLink(e.target.value)}
                         required
@@ -53,8 +58,7 @@ const JoinServer = ({ closeStatus , popUpClose}) => {
 
                     <p className="invite-examples">INVITES SHOULD LOOK LIKE</p>
                     <p className="example-link">hTKzmak</p>
-                    <p className="example-link">http://vbeon.gg/hTKzmak</p>
-                    <p className="example-link">http://vbeon.gg/wumpus-friends</p>
+                    <p className="example-link">15edefc6k</p>
 
                     <div className="discover-section">
                         <span className="discover-icon">✅</span>
