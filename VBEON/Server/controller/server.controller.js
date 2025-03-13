@@ -41,11 +41,13 @@ export const createServer = async (request , response , next)=>{
 export const joinServer = async (request , response , next)=>{
     try{
         const {inviteCode} = request.params;
+        
         let getUserId = jwt.verify(request.cookies.id , process.env.KEY);
         let userId = getUserId.id;
         
         let inviteStatus = await Invite.findOne({code : inviteCode});
-
+        console.log(inviteStatus);        
+        
         if(!inviteStatus){
             return response.status(400).json({message : "Invalid Invite link"})
         }
@@ -59,13 +61,13 @@ export const joinServer = async (request , response , next)=>{
         }
        // Convert userId (string) to ObjectId before comparing, as MongoDB stores IDs as ObjectId 
         if (serverStatus.members.some(member => member.user.equals(new mongoose.Types.ObjectId(getUserId)))){
-            return response.status(400).json({ message: "You are already a member of this server" });
+            return response.status(409).json({ message: "You are already a member of this server" });
         }
         
         await Server.updateOne({_id : serverId} , {$push: {members : {user : userId , role : "member"}}});
         await User.updateOne({_id : userId} , {$push : {servers : serverId}});
         return response.status(200).json({message : "Server joined successfully"});
-    }catch(error){
+    }catch(error){        
         return response.status(400).json({message : error.message});
     }
 }

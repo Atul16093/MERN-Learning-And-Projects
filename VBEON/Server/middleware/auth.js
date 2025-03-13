@@ -4,9 +4,7 @@ import User from "../models/user.model.js";
 dotenv.config();
 
 export const auth = async (request , response , next)=>{
-    try{
-        console.log("This is your token",request.headers.token);
-        
+    try{        
     let tokenData = jwt.verify(request.cookies.token , process.env.KEY)
     if(tokenData){        
      let userStatus = await User.findOne({email : tokenData.data})
