@@ -45,8 +45,7 @@ export const joinServer = async (request , response , next)=>{
         let getUserId = jwt.verify(request.cookies.id , process.env.KEY);
         let userId = getUserId.id;
         
-        let inviteStatus = await Invite.findOne({code : inviteCode});
-        console.log(inviteStatus);        
+        let inviteStatus = await Invite.findOne({code : inviteCode});    
         
         if(!inviteStatus){
             return response.status(400).json({message : "Invalid Invite link"})

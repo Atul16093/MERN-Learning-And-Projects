@@ -110,7 +110,7 @@ export const login = async (request, response, next) => {
         let id = emailStatus._id;
         let info = token.idToken(id);
         response.cookie("id", info);
-        return response.status(200).json({ message: "Login successfully " , user : {id : emailStatus._id, username : emailStatus.username, email : emailStatus.email ,servers : emailStatus.servers, status : emailStatus.status , mailToken : data , userId : info}});
+        return response.status(200).json({ message: "Login successfully " , user : {id : emailStatus._id, username : emailStatus.username, email : emailStatus.email ,servers : emailStatus.servers, status : emailStatus.status ,profilePic : emailStatus.profilePic, mailToken : data , userId : info}});
       } else {
         return response
           .status(401)
@@ -280,10 +280,10 @@ export const uploadProfile = async(request , response ,next)=>{
       if(!request.file){
         response.status(404).json({message : "no such file found "});
       }
-      const filePath = `/public/uploads/${request.file.filename}`;
+      const filePath = `/uploads/${request.file.filename}`;
       // const userId = jwt.verify(request.cookies.id , process.env.KEY);
       //Here currently we pass id direclty cause our front end is not ready and I want to check is the image path stored successfully or not 
-      const userStatus = await User.findOne({_id : "67b8c8c6d746896a18c331fd"})
+      const userStatus = await User.findOne({_id : "67d14fbcff16bc927b713390"})
       if(!userStatus){
         return response.status(401).json({message : "Unathorized user"})
       }
@@ -296,7 +296,7 @@ export const uploadProfile = async(request , response ,next)=>{
 //Currently I hardcode the userId for some reason but I'll make this dynamic 
 export const getProfile = async (request , response , next)=>{
   try{
-       const userStatus = await User.findOne({_id : "67b8c8c6d746896a18c331fd"});
+       const userStatus = await User.findOne({_id : "67d14fbcff16bc927b713390"});
        if(!userStatus){
         return response.status(401).json({message : "Unathorized user"})
       }
