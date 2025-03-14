@@ -11,6 +11,7 @@ import CreateServer from "./CreateServer.jsx";
 import VerticalDot from "../../assets/VerticalDot.svg";
 import ServerOptions from "./ServerOptions.jsx";
 import InvitePopup from "../InviteSection/InvitePopup.jsx";
+import ProfilePopup from "../Profile/ProfilePopup.jsx";
 const Hero = () => {
     const [isHidden , setIsHidden] = useState(false);
     const [channels , setChannels] = useState([]);
@@ -20,7 +21,7 @@ const Hero = () => {
     const [server , setServer] = useState();
     const serverData = useSelector((store)=>store.User ); 
     const [newServer , setNewServer] = useState(serverData.user.servers);
-    
+
     const user_id = serverData.user.id;
     const newMessageRef = useRef();
     const chatContainerRef = useRef(null);
@@ -152,8 +153,19 @@ const Hero = () => {
       console.log("See your clicking status " , data );
       setServerOptionsPopup(data)
     }
+    const [userPopup , setUserPopup] = useState(false);
+    //UserPopup
+    const handleUserPopup = ()=>{
+        setUserPopup(!userPopup);
+    }
+    //handle closing of profile
+    const handleProfileClosing = (data)=>{
+        setUserPopup(data)      
+    }  
+    let url = `http://localhost:5400${serverData.user.profilePic}`
+      
+    //It's a editing popup closign and displaying function
   return <>
-  
     <div className="dashboard">
       {/* SERVER LIST (Far Left) */}
       <nav className="server-list">
@@ -163,7 +175,6 @@ const Hero = () => {
           <li onClick={handleCreateServer} className="server-icon"><img  src={Plus} alt="add Server" style={{width : "20px" , height : "20px"}} /></li>
         </ul>
       </nav>
-
       {/* SIDEBAR (Channels) */}
       <aside className={isHidden ? "minSidebar" :"sidebar"}>
         <div className="sidebar-header">
@@ -198,20 +209,19 @@ const Hero = () => {
             </ul>
           </div>
         </div>
-
+        {userPopup ? <div className="user-details"><ProfilePopup  profileState = {handleProfileClosing}  sendToChild = {serverData}  /> </div>: ""}
         <div className="user-info">
-          <img src={" "} alt="User" />
+          <img src={url} alt="User" />          
           <div className="user-details">
-            <p className="username">Username</p>
-            <p className="status">Online</p>
+            <button style={{outline : "none "}} onClick={handleUserPopup} className="username plus-btn">{serverData.user.username}</button>
+            <p className="status">{serverData.user.status == "online" ? "🟢 Online" : serverData.user.status == "offline" ? "⚫ Offline" : serverData.user.status == "idle" ? "🌙 Idle" : serverData.user.status == "dnd" ? "⛔ DND" : ""} </p>
           </div>
         </div>
       </aside>
 
       {/* MAIN CONTENT (Chat) */}
-      <main className="main">
-            
-      {popupStatus ? <InvitePopup serverInfo = {selectedServer}  inviteClose = {handleInvite} /> : ""};
+      <main className="main"> 
+      {popupStatus ? <InvitePopup serverInfo = {selectedServer}  inviteClose = {handleInvite} /> : ""}
 
        {addChannelPopup && <div className="modal-overlay"> 
           <div className="modal-content">

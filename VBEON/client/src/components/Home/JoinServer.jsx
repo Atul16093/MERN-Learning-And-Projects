@@ -36,7 +36,7 @@ const JoinServer = ({ closeStatus , popUpClose}) => {
     return (
         <div className="modal-overlay">
             <div className="modal-container">
-                <button className="close-btn" onClick={closePopup}>×</button>
+                <button className="close-btn" style={{outline : "none", width : "45px"}} onClick={closePopup}>X</button>
                 <h2>Join a Server</h2>
                 <p className="modal-description">
                     Enter an invite below to join an existing server

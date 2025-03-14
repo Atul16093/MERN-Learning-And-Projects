@@ -8,5 +8,6 @@ export default {
     CREATE_SERVER  : "http://localhost:5400/server/create-server",
     ALL_SERVER     : "http://localhost:5400/server/all-server/",
     JOIN_SERVER    : "http://localhost:5400/server/join/",
-    GENERATE_LINK  : "http://localhost:5400/server/"
+    GENERATE_LINK  : "http://localhost:5400/server/",
+    GET_PROFILE    : "http://localhost:5400/user/profile-pic"
 }
