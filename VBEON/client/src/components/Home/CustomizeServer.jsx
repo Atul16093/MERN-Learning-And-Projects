@@ -28,7 +28,7 @@ const CustomizeServer = ({receivedFromCustomize , sendDataToCreate}) => {
         <div className="upload-section">
           <div className="upload-circle">
             <span className="upload-icon">📷</span>
-            <button className="upload-btn">+</button>
+            <input type="file" className="upload-btn" placeholder="+"/>
           </div>
           <p className="upload-text">UPLOAD</p>
         </div>

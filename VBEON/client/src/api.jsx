@@ -9,5 +9,6 @@ export default {
     ALL_SERVER     : "http://localhost:5400/server/all-server/",
     JOIN_SERVER    : "http://localhost:5400/server/join/",
     GENERATE_LINK  : "http://localhost:5400/server/",
-    GET_PROFILE    : "http://localhost:5400/user/profile-pic"
+    GET_PROFILE    : "http://localhost:5400/user/profile-pic",
+    DELETE_SERVER  : "http://localhost:5400/server/delete/"
 }

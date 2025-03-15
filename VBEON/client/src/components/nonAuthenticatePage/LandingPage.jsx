@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import ROBOSVG from "../../assets/FloatingRobo.svg";
 import "./LandingPage.css";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 const LandingPage = () => {
   const [menuActive, setMenuActive] = useState(false);
   const navigate = useNavigate();
@@ -26,16 +27,15 @@ const LandingPage = () => {
             <span></span>
           </div>
           <ul className={`nav-links ${menuActive ? "active" : ""}`}>
-            <li>Home</li>
-            <li>About</li>
-            <li>Contact</li>
-            <li>Login</li>
-            <li className="signup">Sign up</li>
+           <Link style={{color : "white"}} to = "/about">About</Link>
+            <Link style={{color: "white"}} to = "/contact">Contact</Link>
+            <Link to = "/login" style={{color : "white"}}>Login</Link>
+            <Link style={{color : "white"}} to= "/emo" className="signup">Sign up</Link>
           </ul>
         </nav>
 
         <div className="hero-section">
-          <h1>Chat Beyond Limits</h1>
+          <h1 style={{fontWeight : "bold"}}>Chat Beyond Limits</h1>
           <p>
             Create your space. Build servers, add channels, and chat without
             limits. Your community, your rules.

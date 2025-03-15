@@ -3,6 +3,8 @@ import LandingPage from "./nonAuthenticatePage/LandingPage.jsx";
 import Emo from "./nonAuthenticatePage/Emo.jsx";
 import Login from "./nonAuthenticatePage/login.jsx";
 import Hero from "./Home/Hero.jsx";
+import About from "./Home/About.jsx";
+import Contact from "./Home/Contact.jsx";
 
 let RouterConfig = ()=>{
     return <>
@@ -11,6 +13,8 @@ let RouterConfig = ()=>{
             <Route path = "/emo" element = {<Emo/>}/>
             <Route path = "/login" element = {<Login/>}/>
             <Route path = "/home"  element = {<Hero/>}/>
+            <Route path = "about"  element = {<About/>}/>
+            <Route path = "contact"  element = {<Contact/>}/>
         </Routes>
     </>
 }

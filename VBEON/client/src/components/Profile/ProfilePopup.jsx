@@ -1,13 +1,14 @@
 import { useState, useEffect, useRef } from "react";
 import "./ProfilePopup.css";
 
-const ProfilePopup = ({profileState , sendToChild }) => {
+const ProfilePopup = ({profileState , sendToChild, sendEditToParent}) => {
   const [profileClosing , setProfileClosing ] = useState(false);
   const [userData , setUserData] = useState(sendToChild.user);
   const [editPopup , setEditPopup] = useState(true);
   const popupRef = useRef(null);
 
   useEffect(() => {
+    
     const handleClickOutside = (event) => {
       if (popupRef.current && !popupRef.current.contains(event.target)) {
        handleProfileClosing();       
@@ -20,6 +21,10 @@ const ProfilePopup = ({profileState , sendToChild }) => {
   const handleProfileClosing = ()=>{
     setProfileClosing(!profileClosing);
     profileState(profileClosing);
+  }
+  const handleEditStatus = ()=>{
+    setEditPopup(!editPopup);
+    sendEditToParent(editPopup);
   }
   let url = `http://localhost:5400${userData.profilePic}`
   return (
@@ -46,7 +51,7 @@ const ProfilePopup = ({profileState , sendToChild }) => {
         </div>
 
         <div className="profile-options">
-          <button  className="profile-option">✏ Edit Profile</button>
+          <button onClick={handleEditStatus}  className="profile-option">✏ Edit Profile</button>
           <button className="profile-option">{userData.status == "online" ? "🟢 Online" : userData.status == "offline" ? "⚫ Offline" : userData.status == "idle" ? "🌙 Idle" : userData.status == "dnd" ? "⛔ DND" : ""} </button>
           <button className="profile-option">🔄 Switch Accounts</button>
         </div>

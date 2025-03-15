@@ -12,7 +12,7 @@ const JoinServer = ({ closeStatus , popUpClose}) => {
         e.preventDefault();
         try{
         if (!inviteLink) {
-            alert("Please enter an invite link.");
+            alert("Please enter an invite Code.");
             return;
         }
         //Getting the last invite code from here 

@@ -12,6 +12,7 @@ import VerticalDot from "../../assets/VerticalDot.svg";
 import ServerOptions from "./ServerOptions.jsx";
 import InvitePopup from "../InviteSection/InvitePopup.jsx";
 import ProfilePopup from "../Profile/ProfilePopup.jsx";
+import ServerSettingsPopup from "../ServerSetting/ServerSettingsPopup.jsx";
 const Hero = () => {
     const [isHidden , setIsHidden] = useState(false);
     const [channels , setChannels] = useState([]);
@@ -28,6 +29,7 @@ const Hero = () => {
     const [addChannelPopup , setAddChannelPopup] = useState(false)
     const [addServerPopup , setAddServerPopup]   = useState(false);
     const [serverOptionsPopup , setServerOptionsPopup] = useState(false);
+    const [deleteStatus , setDeleteStatus] = useState();
     //It's for invite popup 
     const [popupStatus , setPopupStatus] = useState(false);
     //Handle data from child 
@@ -142,6 +144,7 @@ const Hero = () => {
         setServerOptionsPopup(!serverOptionsPopup)        
     }
     const handleInviteStatus = (data)=>{
+      setServerOptionsPopup(!serverOptionsPopup)
       setPopupStatus(data);
     }
     //Handle the invite 
@@ -163,8 +166,23 @@ const Hero = () => {
         setUserPopup(data)      
     }  
     let url = `http://localhost:5400${serverData.user.profilePic}`
+    const [isClose , setIsClose] = useState(false);
+    const handleIsClose = (data)=>{
+      setServerOptionsPopup(!serverOptionsPopup)
+      console.log("it's a data of is close ", data);
+      setIsClose(data)
       
+    }
+    const handleSettingStatus = (data)=>{
+      setIsClose(data);
+    }
     //It's a editing popup closign and displaying function
+    //Doing this for live rendering 
+    const handleDeleteStatus =async (data)=>{
+      console.log(data);
+      const res = await axios.get(`${api.ALL_SERVER}${serverData.user.id}`, {withCredentials : true});
+      setNewServer(res.data.detail.servers);
+    }    
   return <>
     <div className="dashboard">
       {/* SERVER LIST (Far Left) */}
@@ -190,7 +208,7 @@ const Hero = () => {
             <button   onClick={handleAddChannel} style={{outline : "none" ,  width : "43px"}}  className="plus-btn">{selectedServer == null ? "" : <img className="plus" src={Plus} alt="" />}</button>
             :""}<button onClick={handleOptions} className="plus-btn"  style={{outline : "none" , marginLeft : "1px",  width : "40px"}}> {selectedServer == null ? "" : <img  src={VerticalDot} alt="dot img" style={{width : 25}}/>}</button>
             </div>
-              {serverOptionsPopup ? <ServerOptions  inviteStatus={handleInviteStatus}  clickSentToParent={handleClick}   /> : ""}
+              {serverOptionsPopup ? <ServerOptions sendToHeroForDelete={handleDeleteStatus} isClose={handleIsClose} sendSelectedServer = {selectedServer} sendDataToChild = {serverData}  inviteStatus={handleInviteStatus}  clickSentToParent={handleClick}   /> : ""}
             <ul>
               {channels.map((channel , index)=>{
                 return <li key={index} onClick={()=>{handleChannelClick(channel)}}> {channel.type == "text" ? `😊 ${channel.channelname}` : ""}
@@ -221,6 +239,7 @@ const Hero = () => {
 
       {/* MAIN CONTENT (Chat) */}
       <main className="main"> 
+        {isClose ? <ServerSettingsPopup sendServerDetails = {selectedServer}  sendToHeroByServer={handleSettingStatus} /> : ""}
       {popupStatus ? <InvitePopup serverInfo = {selectedServer}  inviteClose = {handleInvite} /> : ""}
 
        {addChannelPopup && <div className="modal-overlay"> 
@@ -269,7 +288,6 @@ const Hero = () => {
                 ) : (
                     <p className="select-channel-message">Select a channel to start chatting</p>
                 )}
-                
       </main>
     </div>
   </>
