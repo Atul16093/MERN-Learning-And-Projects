@@ -5,6 +5,7 @@ import Login from "./nonAuthenticatePage/login.jsx";
 import Hero from "./Home/Hero.jsx";
 import About from "./Home/About.jsx";
 import Contact from "./Home/Contact.jsx";
+import ProtectedRoute from "./ProtectedRoute.jsx";
 
 let RouterConfig = ()=>{
     return <>
@@ -12,7 +13,7 @@ let RouterConfig = ()=>{
             <Route path="/" element = {<LandingPage/>}/>
             <Route path = "/emo" element = {<Emo/>}/>
             <Route path = "/login" element = {<Login/>}/>
-            <Route path = "/home"  element = {<Hero/>}/>
+            <Route path = "/home"  element = {<ProtectedRoute><Hero/></ProtectedRoute>}/>
             <Route path = "about"  element = {<About/>}/>
             <Route path = "contact"  element = {<Contact/>}/>
         </Routes>

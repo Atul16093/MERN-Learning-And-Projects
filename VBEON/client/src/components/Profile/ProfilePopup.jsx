@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import "./ProfilePopup.css";
+import { useDispatch } from "react-redux";
+import { unSetUser } from "../../Redux/UserSlice";
 
 const ProfilePopup = ({profileState , sendToChild, sendEditToParent}) => {
   const [profileClosing , setProfileClosing ] = useState(false);
@@ -27,6 +29,11 @@ const ProfilePopup = ({profileState , sendToChild, sendEditToParent}) => {
     sendEditToParent(editPopup);
   }
   let url = `http://localhost:5400${userData.profilePic}`
+  const dispatch = useDispatch();
+  //Handling logout here 
+  const handleLogout = ()=>{
+     dispatch(unSetUser());
+  }
   return (
     <div className={`profile-overlay ${true? "show" : ""}`}>
       <div className={`profile-popup ${true? "popup-open" : "popup-close"}`} ref={popupRef}>
@@ -53,7 +60,7 @@ const ProfilePopup = ({profileState , sendToChild, sendEditToParent}) => {
         <div className="profile-options">
           <button onClick={handleEditStatus}  className="profile-option">✏ Edit Profile</button>
           <button className="profile-option">{userData.status == "online" ? "🟢 Online" : userData.status == "offline" ? "⚫ Offline" : userData.status == "idle" ? "🌙 Idle" : userData.status == "dnd" ? "⛔ DND" : ""} </button>
-          <button className="profile-option">🔄 Switch Accounts</button>
+          <button onClick={handleLogout} className="profile-option">🔓 Log out</button>
         </div>
       </div>
     </div>

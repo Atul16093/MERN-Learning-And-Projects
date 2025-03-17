@@ -13,6 +13,7 @@ import ServerOptions from "./ServerOptions.jsx";
 import InvitePopup from "../InviteSection/InvitePopup.jsx";
 import ProfilePopup from "../Profile/ProfilePopup.jsx";
 import ServerSettingsPopup from "../ServerSetting/ServerSettingsPopup.jsx";
+import MemberSelector from "../PrivateChannel/MemberSelector.jsx";
 const Hero = () => {
     const [isHidden , setIsHidden] = useState(false);
     const [channels , setChannels] = useState([]);
@@ -22,7 +23,6 @@ const Hero = () => {
     const [server , setServer] = useState();
     const serverData = useSelector((store)=>store.User ); 
     const [newServer , setNewServer] = useState(serverData.user.servers);
-
     const user_id = serverData.user.id;
     const newMessageRef = useRef();
     const chatContainerRef = useRef(null);
@@ -30,6 +30,7 @@ const Hero = () => {
     const [addServerPopup , setAddServerPopup]   = useState(false);
     const [serverOptionsPopup , setServerOptionsPopup] = useState(false);
     const [deleteStatus , setDeleteStatus] = useState();
+    const [updatedChannelData , setUpdatedChannelData] = useState([])
     //It's for invite popup 
     const [popupStatus , setPopupStatus] = useState(false);
     //Handle data from child 
@@ -37,8 +38,7 @@ const Hero = () => {
       try{
           setAddChannelPopup(data.data );
           let res = await axios.get(`${api.GET_CHANNEL}${data.serverId}` , {withCredentials : true});
-          console.log(res.data.channelInfo);
-          
+          // console.log(res.data.channelInfo);
            setChannels(res.data.channelInfo);    
       }catch(err){
         console.log("Error in handleDataFromChild" , err);
@@ -86,6 +86,7 @@ const Hero = () => {
       setMessages([]);
       try{
         let res = await axios.get(`${api.GET_CHANNEL}${server._id}` , {withCredentials : true});
+        setUpdatedChannelData(res.data.channelInfo);
         setChannels(Array.isArray(res.data.channelInfo) ? res.data.channelInfo : []);
       }catch(err){
         console.log("Error fetching channels:", err);
@@ -176,13 +177,35 @@ const Hero = () => {
     const handleSettingStatus = (data)=>{
       setIsClose(data);
     }
-    //It's a editing popup closign and displaying function
+    //It's a editing popup closing and displaying function
     //Doing this for live rendering 
     const handleDeleteStatus =async (data)=>{
       console.log(data);
       const res = await axios.get(`${api.ALL_SERVER}${serverData.user.id}`, {withCredentials : true});
       setNewServer(res.data.detail.servers);
-    }    
+    } 
+    //It's help us the handle the rerendring the main component while we update the name of the server 
+    const handleForRendering = async (data)=>{
+      const res = await axios.get(`${api.ALL_SERVER}${serverData.user.id}`, {withCredentials : true});
+      
+      setNewServer(res.data.detail.servers);
+    }
+    const handleChannelData = async (data)=>{
+      let res = await axios.get(`${api.GET_CHANNEL}${data}` , {withCredentials : true});
+       setUpdatedChannelData(res.data.channelInfo);
+       setChannels(res.data.channelInfo);   
+    }
+    //Handle private member popup 
+    const [privatePopup , setPrivatePopup] = useState(false);
+    const handleChannelPopup = (data)=>{
+        setPrivatePopup(data)
+    }
+    const handleMemberSelector = (data)=>{
+        setPrivatePopup(data)
+    } 
+    console.log("Hey" , channels);
+       console.log("hei", serverData);
+           
   return <>
     <div className="dashboard">
       {/* SERVER LIST (Far Left) */}
@@ -211,9 +234,17 @@ const Hero = () => {
               {serverOptionsPopup ? <ServerOptions sendToHeroForDelete={handleDeleteStatus} isClose={handleIsClose} sendSelectedServer = {selectedServer} sendDataToChild = {serverData}  inviteStatus={handleInviteStatus}  clickSentToParent={handleClick}   /> : ""}
             <ul>
               {channels.map((channel , index)=>{
-                return <li key={index} onClick={()=>{handleChannelClick(channel)}}> {channel.type == "text" ? `😊 ${channel.channelname}` : ""}
-                </li>
+                return (!channel.private) && (<li key={index} onClick={()=>{handleChannelClick(channel)}}> {channel.type == "text" ? `😊 ${channel.channelname}` : ""}
+                </li>)
               })}
+              <span className="text-channel" >Private Channel </span>
+              {channels.map((channel, index) => {
+             return (channel.private && channel.type === "text" && channel.allowedMembers.includes(serverData.user.id) && ( <li key={index} onClick={() => handleChannelClick(channel)}> 😊 {channel.channelname}
+      </li>
+    )
+  );
+})}
+
             </ul>
           </div>
 
@@ -239,12 +270,13 @@ const Hero = () => {
 
       {/* MAIN CONTENT (Chat) */}
       <main className="main"> 
-        {isClose ? <ServerSettingsPopup sendServerDetails = {selectedServer}  sendToHeroByServer={handleSettingStatus} /> : ""}
+        {privatePopup ?  <MemberSelector sendToChild = {updatedChannelData} MemberSelectorToHero={handleMemberSelector}/>: ""}
+        {isClose ? <ServerSettingsPopup sendUpdatedMessage={handleForRendering} sendServerDetails = {selectedServer}  sendToHeroByServer={handleSettingStatus} /> : ""}
       {popupStatus ? <InvitePopup serverInfo = {selectedServer}  inviteClose = {handleInvite} /> : ""}
 
        {addChannelPopup && <div className="modal-overlay"> 
           <div className="modal-content">
-             <CreateChannel sendDataToParent = {handleDataFromChild} serverId={selectedServer._id} />
+             <CreateChannel ChildToParentForPopup={handleChannelPopup} ChannelToParent={handleChannelData} sendDataToParent = {handleDataFromChild} serverId={selectedServer._id} />
               </div>
                 </div> }
 
@@ -266,10 +298,10 @@ const Hero = () => {
                                 <p className="message-username ">{msg.sender.username }</p> 
                                 {/* Message Bubble */}
                                 <div className="message-bubble">
-                                  <p className="message-text text-dark ">{msg.content}</p>
+                                  <span className="message-text ">{msg.content}</span>
                                 </div>
                               </div>
-                            );
+                            )
                           })}
                         </div>
 
@@ -286,7 +318,9 @@ const Hero = () => {
 
                     </>
                 ) : (
+                  <div className="d-flex justify-content-center align-items-center">
                     <p className="select-channel-message">Select a channel to start chatting</p>
+                    </div>
                 )}
       </main>
     </div>

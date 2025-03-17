@@ -72,13 +72,22 @@ const Emo = ()=>{
       }
       if(field === "password"){
         if(!validatePassword(value)){
+          setChatHistory((prev) => [...prev , {sender : "user" , text : value}]);
           return "Password must contain one lowercase , one uppercase , one special character and one number "
         }
       }
       if (field === "dob") {
-        const dobRegex = /^\d{4}-\d{2}-\d{2}$/;
+        const dobRegex = /^(?:19|20)\d{2}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/;
         if (!dobRegex.test(value)) {
+          setChatHistory((prev) => [...prev , {sender : "user" ,  text : value}]);
           return "Date of birth must be in YYYY-MM-DD format.";
+        }
+      }
+      if(field === "status"){
+        console.log(value);
+        if(value !== "idle" && value !=="offline" && value !== "online" && value !== "dnd"){
+          setChatHistory((prev) => [...prev , {sender : "user" , text : value}]);
+          return "The status should be either 'offline', 'online', 'dnd', or 'idle'."
         }
       }
       return "";

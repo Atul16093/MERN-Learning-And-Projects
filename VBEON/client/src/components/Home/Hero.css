@@ -348,7 +348,7 @@
 
 .sent .message-bubble {
   background-color: #007bff;
-  color: rgb(255, 255, 255);
+  color: rgb(255, 255, 255) !important;
   border-radius: 18px 18px 0 18px;
 }
 
@@ -359,7 +359,7 @@
 
 .received .message-bubble {
   background-color: #e0e0e0;
-  color: black;
+  color: black !important;
   border-radius: 18px 18px 18px 0;
 }
 /* Message Bubble */

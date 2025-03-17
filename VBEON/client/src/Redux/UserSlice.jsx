@@ -15,8 +15,13 @@ const slice = createSlice({
         state.token = action.payload.token,
         state.message = action.payload.message,
         state.isLoggedIn = true
+    },
+    unSetUser : (state , action)=>{
+      state.user = null,
+      state.token = null,
+      state.isLoggedIn = false
     }
   }
 });
-export const {setUser} = slice.actions;
+export const {setUser , unSetUser} = slice.actions;
 export default slice.reducer;

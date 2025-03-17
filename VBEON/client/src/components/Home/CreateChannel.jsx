@@ -2,20 +2,26 @@ import { useEffect, useRef, useState } from "react";
 import "./CreateChannel.css"
 import axios from "axios";
 import api from "../../api";
-const CreateChannel = ({sendDataToParent , serverId})=>{
-    const [status , setStatus] = useState();    
+import {toast, ToastContainer} from "react-toastify";
+const CreateChannel = ({sendDataToParent , serverId , ChannelToParent , ChildToParentForPopup})=>{
+    const [status , setStatus] = useState();  
+    const [isPrivate, setIsPrivate] = useState(false);  
     const channelNameRef = useRef();
     const textChannelRef = useRef();
     const voiceChannelref = useRef();
 
     const handleSubmit = async()=>{
         try{        
-        await axios.post(`${api.CREATE_CHANNEL}/${serverId}/create` , {channelname : channelNameRef.current.value , type : textChannelRef.current.value},{
+        const res = await axios.post(`${api.CREATE_CHANNEL}/${serverId}/create` , {channelname : channelNameRef.current.value , type : textChannelRef.current.value},{
         withCredentials : true //it ensure cookies are send and the creditaial true help us to get the cookies from the browser storage
        });
+       //For live time re-rendering I did this thing,
+       ChannelToParent(serverId);
+       
+      //  toast.success('Channel Created Successfully...!');
         }catch(err){
+          toast.error("Channel already exist...!")
           console.log("Error in handleSubmit function",err);
-          
         }
        
       }
@@ -23,7 +29,26 @@ const CreateChannel = ({sendDataToParent , serverId})=>{
         setStatus(false);
         sendDataToParent({status , serverId});
     }
+    
+  const handleToggle = () => {
+    setIsPrivate((prev) => !prev);
+  };
+  const handleSubmitForPrivate = async()=>{
+    try{
+      const res = await axios.post(`${api.CREATE_CHANNEL}/${serverId}/create`, {channelname : channelNameRef.current.value, type : textChannelRef.current.value , isPrivate : true} , {withCredentials : true});
+      
+      // console.log(res.data.channel._id);
+      
+      ChildToParentForPopup(true);
+      ChannelToParent(serverId);
+    }catch(error){
+      toast.error("Channel name already exists...!")
+      console.log("Error in handleSubmitForPrivate" , error);
+      
+    }
+  }
     return <>
+         <ToastContainer/>
         <div className="modal-overlay">
       <div className="modal-container">
         <h2>Create Channel</h2>
@@ -62,25 +87,25 @@ const CreateChannel = ({sendDataToParent , serverId})=>{
               type="text"/>
           </div>
         </div>
-
         <div className="private-channel-toggle">
-          <label>
-            <input
-              type="checkbox"/>
-            Private Channel
-          </label>
-          <p className="description">
-            Only selected members and roles will be able to view this channel.
-          </p>
-        </div>
-
+      <div className="toggle-container">
+        <span className="lock-icon">🔒</span> {/* Lock icon like Discord */}
+        <span className="label">Private Channel</span>
+        <button className={`toggle-button ${isPrivate ? "active" : ""}`} onClick={handleToggle}>
+          <span className="toggle-circle"></span>
+        </button>
+      </div>
+      <p className="description">
+        Only selected members and roles will be able to view this channel.
+      </p>
+    </div>
         <div className="modal-actions">
           <button onClick={()=>{handleCancel()}} className="cancel-btn" >
             Cancel
           </button>
-          <button onClick={()=>{handleSubmit(); handleCancel()}} className="create-btn" >
+          {isPrivate? <button onClick={()=>{handleSubmitForPrivate(); handleCancel() }} className="create-btn">Next</button> :  <button  onClick={()=>{handleSubmit(); handleCancel()}} className="create-btn" >
             Create Channel
-          </button>
+          </button> }          
         </div>
       </div>
     </div>

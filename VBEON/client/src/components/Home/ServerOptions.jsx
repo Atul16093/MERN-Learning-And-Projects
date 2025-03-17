@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./ServerOptions.css"; // Import CSS
 import api from "../../api";
 import axios from "axios";
@@ -9,6 +9,18 @@ const ServerOptions = ({inviteStatus , clickSentToParent , sendDataToChild , sen
     const [userData , setUserData] = useState(sendDataToChild.user);
     const [close , setClose ] = useState(true);
     const [resp , setResp] = useState();
+    const popupRef = useRef(null);
+     useEffect(() => {
+        const handleClickOutside = (event) => {
+          if (popupRef.current && !popupRef.current.contains(event.target)) {
+             setClose(!close);
+             handleWhileClick();
+          }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+      }, []);
+
     const handleInvite = ()=>{
         setInvitePopup(!invitePopup);
         inviteStatus(invitePopup);
@@ -33,7 +45,7 @@ const ServerOptions = ({inviteStatus , clickSentToParent , sendDataToChild , sen
       }      
     }
   return <>
-    <div  className="server-options-menu">
+    <div  className="server-options-menu" ref={popupRef}>
       {/* <div className="menu-item">Mark As Read</div> */}
       <div onClick={()=>{handleInvite(); handleWhileClick()}} className="menu-item invite">Invite People</div>
       {/*  Only admin can see the customize server option */}

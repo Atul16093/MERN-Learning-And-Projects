@@ -10,5 +10,8 @@ export default {
     JOIN_SERVER    : "http://localhost:5400/server/join/",
     GENERATE_LINK  : "http://localhost:5400/server/",
     GET_PROFILE    : "http://localhost:5400/user/profile-pic",
-    DELETE_SERVER  : "http://localhost:5400/server/delete/"
+    DELETE_SERVER  : "http://localhost:5400/server/delete/",
+    UPDATE_SERVER_NAME : "http://localhost:5400/server/",
+    GET_SERVER_DETAILS : "http://localhost:5400/server/search-server/",
+    ADD_MEMBERTO_CHANNEL : "http://localhost:5400/channel/"
 }
