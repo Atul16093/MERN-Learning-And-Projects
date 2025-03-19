@@ -49,7 +49,7 @@ const ProfilePopup = ({profileState , sendToChild, sendEditToParent}) => {
         <p className="username">{userData.username}</p>
 
         <div className="profile-promo">
-          <span>Amp up your profile</span>
+          <span>Amp up your profile(Upcoming)</span>
           <button className="close-promo">✖</button>
           <div className="promo-buttons">
             <button className="promo-btn">🚀 Get Nitro</button>

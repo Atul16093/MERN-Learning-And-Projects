@@ -217,11 +217,14 @@ const Emo = ()=>{
         const login = ()=>{
             navigate("/login");
         }
+        const landing = ()=>{
+          navigate("/")
+        }
     return <>
      <ToastContainer/>
      <div className="glass-bg">
         <header className="glass-header">
-          <h1 className="signup-btn">Emo</h1>
+          <h1 onClick={landing} className="signup-btn">Emo</h1>
           <button onClick={login} className="signup-btn">Login</button>
         </header>
       <div className="glass-container">

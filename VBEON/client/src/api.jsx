@@ -13,5 +13,9 @@ export default {
     DELETE_SERVER  : "http://localhost:5400/server/delete/",
     UPDATE_SERVER_NAME : "http://localhost:5400/server/",
     GET_SERVER_DETAILS : "http://localhost:5400/server/search-server/",
-    ADD_MEMBERTO_CHANNEL : "http://localhost:5400/channel/"
+    ADD_MEMBERTO_CHANNEL : "http://localhost:5400/channel/",
+    OTP_FOR_PASSWORD_RESET : "http://localhost:5400/user/forget-password",
+    OTP_VERIFICATION_FOR_PASSWORD : "http://localhost:5400/user/otp-update-pass",
+    UPDATE_PASSWORD : "http://localhost:5400/user/reset-password",
+    DELETE_CHANNEL  : "http://localhost:5400/channel/",
 }

@@ -2,20 +2,27 @@ import React, { useState, useEffect } from "react";
 import "./MemberSelector.css";
 import axios from "axios";
 import api from "../../api";
-const MemberSelector = ({ MemberSelectorToHero , sendToChild }) => {
-  console.log(sendToChild)
+const AddingMember = ({sendToChildId , sendToChildServerId , closingAddingMemberPopup , currentChannel}) => {
   const [members, setMembers] = useState([]);
   const [selectedMembers, setSelectedMembers] = useState([]);
-  useEffect(() => {
-      fetchData();
-  }, []);
-   const detail = sendToChild[sendToChild.length-1]   
-//    console.log(detail);
-   
-  const fetchData = async ()=>{
-     const res = await axios.get(`${api.GET_SERVER_DETAILS}${detail.serverId}/` , {withCredentials : true});
-     setMembers(res.data.serverInfo.members);
-  }
+  const info = currentChannel.allowedMembers
+//For get the members from the server 
+useEffect(() => {
+    fetchData();
+}, []);
+ 
+const fetchData = async ()=>{
+    try{
+    const res = await axios.get(`${api.GET_SERVER_DETAILS}${sendToChildServerId}/` , {withCredentials : true});
+    setMembers(res.data.serverInfo.members);
+    }catch(error){
+        console.log("Error in fetch data" , error);
+        
+    }
+}
+
+
+
   const handleCheckboxChange = (member) => {
     setSelectedMembers((prevSelected) =>
       prevSelected.includes(member)
@@ -33,7 +40,7 @@ const MemberSelector = ({ MemberSelectorToHero , sendToChild }) => {
     }
   };
   const onClose  = ()=>{
-    MemberSelectorToHero(false)
+    closingAddingMemberPopup(false);
   };
   
   const handleAddMember = async ()=>{
@@ -44,7 +51,7 @@ const MemberSelector = ({ MemberSelectorToHero , sendToChild }) => {
        const memberIds = selectedMembers.map(member => member.user._id);
        console.log("Sending membersIds : " , memberIds);
        try{
-         const res = await axios.post(`${api.ADD_MEMBERTO_CHANNEL}${detail._id}/add-members`, {memberIds} , {withCredentials : true});
+         const res = await axios.post(`${api.ADD_MEMBERTO_CHANNEL}${sendToChildId}/add-members`, {memberIds} , {withCredentials : true});
          console.log("Response from backend:", res);
         }catch(error){
             console.log("Error in adding member : " , error.response?.data || error.message );
@@ -96,4 +103,4 @@ const MemberSelector = ({ MemberSelectorToHero , sendToChild }) => {
   );
 };
 
-export default MemberSelector;
+export default AddingMember;

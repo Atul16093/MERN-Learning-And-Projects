@@ -6,6 +6,7 @@ import {toast, ToastContainer} from "react-toastify";
 const CreateChannel = ({sendDataToParent , serverId , ChannelToParent , ChildToParentForPopup})=>{
     const [status , setStatus] = useState();  
     const [isPrivate, setIsPrivate] = useState(false);  
+    const [errorMessage , setErrorMessage] = useState();
     const channelNameRef = useRef();
     const textChannelRef = useRef();
     const voiceChannelref = useRef();
@@ -20,7 +21,7 @@ const CreateChannel = ({sendDataToParent , serverId , ChannelToParent , ChildToP
        
       //  toast.success('Channel Created Successfully...!');
         }catch(err){
-          toast.error("Channel already exist...!")
+          // toast.error("Channel already exist...!")
           console.log("Error in handleSubmit function",err);
         }
        
@@ -37,12 +38,13 @@ const CreateChannel = ({sendDataToParent , serverId , ChannelToParent , ChildToP
     try{
       const res = await axios.post(`${api.CREATE_CHANNEL}/${serverId}/create`, {channelname : channelNameRef.current.value, type : textChannelRef.current.value , isPrivate : true} , {withCredentials : true});
       
-      // console.log(res.data.channel._id);
-      
+      console.log(res.data);
+      setErrorMessage("");
       ChildToParentForPopup(true);
       ChannelToParent(serverId);
     }catch(error){
-      toast.error("Channel name already exists...!")
+      setErrorMessage(error.response.data.message);
+      toast.error(error.response.data.message||"Channel name already exists...!")
       console.log("Error in handleSubmitForPrivate" , error);
       
     }
@@ -103,7 +105,7 @@ const CreateChannel = ({sendDataToParent , serverId , ChannelToParent , ChildToP
           <button onClick={()=>{handleCancel()}} className="cancel-btn" >
             Cancel
           </button>
-          {isPrivate? <button onClick={()=>{handleSubmitForPrivate(); handleCancel() }} className="create-btn">Next</button> :  <button  onClick={()=>{handleSubmit(); handleCancel()}} className="create-btn" >
+          {isPrivate? <button  onClick={()=>{handleSubmitForPrivate(); errorMessage ? "" : setTimeout(()=>{handleCancel()},500) }} className="create-btn">Next</button> :  <button  onClick={()=>{handleSubmit(); handleCancel()}} className="create-btn" >
             Create Channel
           </button> }          
         </div>

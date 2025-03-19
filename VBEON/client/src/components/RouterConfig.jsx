@@ -6,7 +6,6 @@ import Hero from "./Home/Hero.jsx";
 import About from "./Home/About.jsx";
 import Contact from "./Home/Contact.jsx";
 import ProtectedRoute from "./ProtectedRoute.jsx";
-
 let RouterConfig = ()=>{
     return <>
         <Routes>

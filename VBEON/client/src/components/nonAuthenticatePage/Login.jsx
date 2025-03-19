@@ -1,16 +1,18 @@
 import { useRef, useState, useEffect } from "react";
 import "./Emo.css";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import api from "../../api.jsx";
 import Cookies from "js-cookie";
 import { toast, ToastContainer } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../Redux/UserSlice.jsx";
+import ResetPassword from "../ResetPassword/ResetPassword.jsx";
 const Login = () => {
   const dispatch = useDispatch();
 
   const [step, setStep] = useState(0);
+  const [forLink , setForLink] =  useState(false);
   const [chatHistory, setChatHistory] = useState([
     {
       sender: "Emo",
@@ -52,6 +54,14 @@ const Login = () => {
     let mess = userInputRef.current.value;
     if (!mess) return;
     setChatHistory([...chatHistory, { sender: "user", text: mess }]);
+    if(mess.toUpperCase() == "YES"){
+      setForLink(true);
+      return
+    }else if(mess.toUpperCase() == "NO"){
+      setChatHistory((prev) => [...prev, { sender: "assistant", text: "Please enter your email and password again." }]);
+      setStep(0)
+      return;
+    }
     const error = validateInput(userKeys[step], mess);
 
     if (error) {
@@ -60,7 +70,6 @@ const Login = () => {
     }
 
     setUserData((prev) => ({ ...prev, [userKeys[step]]: mess }));
-
     userInputRef.current.value = "";
     let nextStep = step + 1;
 
@@ -121,30 +130,38 @@ const Login = () => {
             { sender: "assistant", text: "Login successful!" },
           ]);
           toast.success("Login Success...");
-          navigate("/home");
+          setTimeout(()=>{
+            navigate("/home");
+          },2000)
         } catch (err) {
-          toast.error("Invalid Credentials...");
           console.log("Error in Login function ", err);
-          const errorMsg =
+          let errorMsg =
             err.response.data.message ||
             "Login failed. Please check your email and password.";
+            if(err.response.data.message == "Invalid Password"){
+              errorMsg = err.response.data.message + '...! Would you like to reset your password Type YES to proceed with resetting your password. Type NO to re-enter your email and password. ';
+            }
           setChatHistory((prev) => [
             ...prev,
             { sender: "assistant", text: errorMsg },
           ]);
-          setStep(0);
+          // setStep(0);
         }
       };
       login();
     }
   }, [step, userData, steps.length]);
-
-  return (
-    <>
+  const landing = ()=>{
+    navigate("/")
+  }
+  console.log(userData);
+  
+  return <>
       <ToastContainer />
+      {forLink? <ResetPassword email = {userData.email}/> : 
       <div className="glass-bg">
         <header className="glass-header">
-          <h1 className="signup-btn">Emo</h1>
+          <h1 onClick={landing} className="signup-btn">Emo</h1>
           <button onClick={signUp} className="signup-btn">
             SignUp
           </button>
@@ -186,8 +203,8 @@ const Login = () => {
           </div>
         </div>
       </div>
+      }
     </>
-  );
 };
 
 export default Login;
