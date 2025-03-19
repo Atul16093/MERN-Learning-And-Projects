@@ -12,7 +12,7 @@ export const createChannel =async (request , response , next)=>{
             if(!isAdmin){
                 return response.status(400).json({message : "you're not the admin , cann't create a channel"})
             }
-            let {channelname , type } = request.body;
+            let {channelname , type , isPrivate, allowedMembers} = request.body;
             // console.log(channelname , type);
 
             let channel = await Channel.findOne({$and : [{serverId} , {channelname}]});
@@ -26,7 +26,21 @@ export const createChannel =async (request , response , next)=>{
             let status =  await Server.findOne({_id : serverId});
             if(status){
                 //Here we create a channel according to currosponding server
-            let channel = await Channel.create({serverId ,channelname , type});            
+            let channel = await Channel.create({
+                serverId ,
+                channelname,
+                type,
+                private: isPrivate || false,
+                allowedMembers: isPrivate ? allowedMembers : []
+            });  
+            console.log("outer " ,isPrivate);
+            if(isPrivate){
+                console.log(isPrivate);
+                
+             const res =  await  channel.updateOne({$push : {allowedMembers : adminId.id}})
+             console.log(res);
+             
+            }        
                 console.log("Channel " , channel);
                 
             //storing the channelId into the server collection, channel array field 
@@ -37,27 +51,28 @@ export const createChannel =async (request , response , next)=>{
             }
             
         }catch(error){
-            console.log("Error in create channel route " , error);
-            
-            return response.status(500).json({message : "Internal server error "});
+            console.log("Error in create channel route " , error);  
+            return response.status(500).json({message : "You cann't leave empty Field"});
         }
 }
 
 export const deleteChannel = async (request , response , next)=>{
     try{
         let {channelId} = request.params;
+        let {channelname} = request.body;
         //checking the status of the channel 
         let adminId = jwt.verify(request.cookies.id , process.env.KEY);
-  
-        let channelStatus = await Channel.findOne({_id : channelId});
 
+        let channelStatus = await Channel.findOne({_id : channelId , channelname});
+        console.log(channelStatus);
+        
         let isAdmin = await Server.findOne({_id : channelStatus.serverId , owner : adminId.id});
         
         if(!isAdmin){
             return response.status(403).json({message : "You don't have permission to delete this channel "})
         }
         if(!channelStatus){
-            return response.status(400).json({message : "Channel not exist"})
+            return response.status(404).json({message : "Channel not exist"})
         }
         await Server.updateOne({_id : channelStatus.serverId} , {$pull : {channels : channelId}});
         await Channel.deleteOne({_id : channelId});
@@ -141,3 +156,30 @@ export const getChannel = async(request , response , next)=>{
         return response.status(500).json({ message: "Internal server error" });
     }
 }
+
+export const addMembersToChannel = async (request, response) => {
+    try {
+        const { channelId } = request.params;  // Channel ID from URL
+        const { memberIds } = request.body;  // Array of user IDs to add
+        console.log(memberIds);
+        let channel = await Channel.findById(channelId);
+        if (!channel) {
+            return response.status(404).json({ message: "Channel not found" });
+        }
+
+        // Ensure it's a private channel
+        if (!channel.private) {
+            return response.status(400).json({ message: "This is not a private channel" });
+        }
+
+        // Add members to the allowedMembers array (avoid duplicates)
+        channel.allowedMembers = [...new Set([...channel.allowedMembers, ...memberIds])];
+
+        await channel.save();
+
+        return response.status(200).json({ message: "Members added successfully", channel });
+    } catch (error) {
+        console.error("Error in adding members to channel", error);
+        return response.status(500).json({ message: "Internal server error" });
+    }
+};

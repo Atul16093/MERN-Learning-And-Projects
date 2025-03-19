@@ -107,7 +107,7 @@ export const leave = async (request, response , next)=>{
 //Delete Server 
 export const deleteServer = async (request , response , next)=>{
     try{
-    let {serverId} = request.params;
+    let {serverId} = request.params;    
     let serverStatus = await Server.findOne({_id : serverId});
     let tokenObj = jwt.verify(request.cookies.id , process.env.KEY);
     let getUserId = tokenObj.id;
@@ -120,8 +120,10 @@ export const deleteServer = async (request , response , next)=>{
     }
     await Channel.deleteMany({serverId : serverId});
     await User.updateMany({servers : serverId} , {$pull : {servers : serverId}} )
-    await Server.deleteOne({_id : serverId} );
-    return response.status(200).json({message : "Server and all associated channels deleted successfully"});
+    let res = await Server.deleteOne({_id : serverId} );
+    console.log(res);
+    
+    return response.status(200).json({message : "Server and all associated channels deleted successfully" , res});
     }catch(error){
         return response.status(500).json({message : error.message});
     }
@@ -166,7 +168,7 @@ export const getServerDetail = async(request , response , next)=>{
         let {serverId} = request.params;
         // console.log(serverId);
         
-        let serverInfo = await Server.findOne({_id : serverId})
+        let serverInfo = await Server.findOne({_id : serverId}).populate("members.user" , "username , _id , status, profilePic");
         if(!serverInfo){
             return response.status(400).json({message : "Server not found"});
         }

@@ -114,10 +114,10 @@ export const login = async (request, response, next) => {
       } else {
         return response
           .status(401)
-          .json({ message: "Invalid credintial , Please try again" });
+          .json({ message: "Invalid Password" });
       }
     } else {
-      return response.status(401).json({ message: "User Not Found  " });
+      return response.status(404).json({ message: "Email not exist..." });
     }
   } catch (error) {
     console.log("error in login controller", error);
@@ -163,7 +163,6 @@ export const forget = async (request, response, next) => {
     }
     const { email } = request.body;
     let status = await User.findOne({ email });
-
     if (status) {
       const helper = new Helper();
       const OTP = helper.generateOtp(6);
@@ -188,6 +187,8 @@ export const forget = async (request, response, next) => {
       const templateData = new Templete().getOtpTemplete(data);
       helper.sendMail(data, templateData);
       return response.status(200).json({ message: "OTP sent successfully" });
+    }else{
+      return response.status(404).json({message : "Email not exist..."})
     }
   } catch (error) {
     console.log("Error in forget controller", error);
@@ -198,12 +199,14 @@ export const forget = async (request, response, next) => {
 //password updating router
 export const updatePassword = async (request, response, next) => {
   try {
-    let errors = validationResult(request);
+    let errors = validationResult(request);   
     if(!errors.isEmpty()){
       return response.status.json({error : errors.array()});
     }
     //Now here a passoword updation window will open
     const { newPassword } = request.body;
+    console.log("It's a new password " , newPassword);
+    
     let email = jwt.verify(request.cookies.emailToken, process.env.KEY);
     let status = await User.findOne({ email: email.data });
     if (status) {
