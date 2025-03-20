@@ -36,6 +36,12 @@ const CustomizeServer = ({receivedFromCustomize , sendDataToCreate}) => {
         {/* Server Name Input */}
         <label className="server-label">SERVER NAME</label>
         <input
+          onKeyDown={(e)=>{
+            if(e.key === "Enter"){
+            handleSubmit();
+            handleCustomize();
+            }
+          }}
           type="text"
           className="server-input"
           value={serverName}

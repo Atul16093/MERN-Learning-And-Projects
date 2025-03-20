@@ -45,7 +45,7 @@ const ResetPassword = ({email})=>{
       <h2>Enter OTP</h2>
       <p>We have sent a code to your email. Please enter it below.</p>
       <div className="otp-inputs">
-        <input style={{width : "100%"}} ref = {inputRefs} type="text" maxLength= "6" placeholder="Please Enter your OTP here..." />
+        <input onKeyDown={(e)=>{if(e.key === "Enter"){ handleVerifyOTP()}}} style={{width : "100%"}} ref = {inputRefs} type="text" maxLength= "6" placeholder="Please Enter your OTP here..." />
       </div>
       <button onClick={handleVerifyOTP} className="submit-btn">Verify</button>
     </div>

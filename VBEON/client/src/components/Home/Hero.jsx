@@ -26,6 +26,10 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import DeleteChannel from "../../ModifyChannel/DeleteChannel.jsx";
 import { useNavigate } from "react-router-dom";
 import AddingMember from "../PrivateChannel/AddingMember.jsx";
+import { Switch } from "@mui/material";
+import AddIcon from '@mui/icons-material/Add';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
 const Hero = () => {
   const [isHidden, setIsHidden] = useState(false);
   const [channels, setChannels] = useState([]);
@@ -264,6 +268,15 @@ const Hero = () => {
    const handleClosingMemberData = (data)=>{
        setMemberPopup(data)
    }
+   const [text , setText] = useState("DarkMode");
+   const handleText = ()=>{
+     if(text == "Dark Mode"){
+      setText("Light Mode");
+    }else if( text == "Light Mode"){
+       setText("Dark Mode");
+
+     }
+   }
   return (
     <>
       <div className="dashboard">
@@ -303,6 +316,9 @@ const Hero = () => {
         <aside className={isHidden ? "minSidebar" : "sidebar"}>
           <div className="sidebar-header">
             <h1 className="logo">VBEON</h1>
+            <span   onClick={() => {document.body.classList.toggle("light-mode"); handleText()}}>
+ <DarkModeIcon/>
+</span>
             <h1>
               <img
                 className="minimize"
@@ -327,13 +343,14 @@ const Hero = () => {
                     {selectedServer == null ? (
                       ""
                     ) : (
-                      <img className="plus" src={Plus} alt="" />
+                      // <img className="plus" src={Plus} alt="" />
+                      <span className="plus"><AddIcon/></span>
                     )}
                   </button>
                 ) : (
                   ""
                 )}
-                <button
+                <span
                   onClick={handleOptions}
                   className="plus-btn"
                   style={{ outline: "none", marginLeft: "1px", width: "40px" }}
@@ -342,13 +359,9 @@ const Hero = () => {
                   {selectedServer == null ? (
                     ""
                   ) : (
-                    <img
-                      src={VerticalDot}
-                      alt="dot img"
-                      style={{ width: 25 }}
-                    />
+                   <MoreVertIcon/>
                   )}
-                </button>
+                </span>
               </div>
               {serverOptionsPopup ? (
                 <ServerOptions
@@ -591,12 +604,14 @@ const Hero = () => {
               </div>
             </>
           ) : (
-            <div className="d-flex justify-content-center align-items-center">
-              <p className="select-channel-message">
-                Select a channel to start chatting
-              </p>
-            </div>
+            <div className="d-flex justify-content-center align-items-center vh-100">
+  <p className="select-channel-message">
+    Welcome {serverData.user.username} ☺️,<br/> Select a channel to start chatting
+  </p>
+</div>
+
           )}
+
         </main>
       </div>
     </>

@@ -47,6 +47,11 @@ const JoinServer = ({ closeStatus , popUpClose}) => {
                         INVITE LINK <span className="required">*</span>
                     </label>
                     <input
+                        onKeyDown={(e)=>{
+                            if(e.key === "Enter"){
+                                handleSubmit();
+                            }
+                        }}
                         type="text"
                         id="invite-link"
                         className="invite-input"

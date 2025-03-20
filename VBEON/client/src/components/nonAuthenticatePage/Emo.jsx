@@ -197,6 +197,9 @@ const Emo = ()=>{
                   { sender: "assistant", text: res.data.message || "Email verified successfully!" }
                 ]);
                 toast.success("Email verified successfully...");
+                setTimeout(()=>{
+                  navigate("/login");
+                },2000)
               }catch(err){
                 toast.error("Invalid OTP! Please try again...");
                 console.log("Error in verifyOtp fucntion" , err);
