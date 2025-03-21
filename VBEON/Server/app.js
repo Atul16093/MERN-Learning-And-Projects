@@ -50,7 +50,7 @@ mongoose.connect(process.env.MONGO_URI)
     });
     socket.on("sendMessage", async ({ sender, content, channelId }) => {
         const message =await Message.create({ sender, content, channelId });
-        console.log("Let's see ",message , "This is your channel id " , channelId);
+        // console.log("Let's see ",message , "This is your channel id " , channelId);
         
         io.to(channelId).emit("receiveMessage", message);
     });

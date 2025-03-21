@@ -280,13 +280,16 @@ export const logout = async (request , response  ,next)=>{
 
 export const uploadProfile = async(request , response ,next)=>{
   try{
+      const {userId} = request.params;
       if(!request.file){
         response.status(404).json({message : "no such file found "});
       }
       const filePath = `/uploads/${request.file.filename}`;
+      console.log(filePath);
+      
       // const userId = jwt.verify(request.cookies.id , process.env.KEY);
       //Here currently we pass id direclty cause our front end is not ready and I want to check is the image path stored successfully or not 
-      const userStatus = await User.findOne({_id : "67d14fbcff16bc927b713390"})
+      const userStatus = await User.findOne({_id : userId});
       if(!userStatus){
         return response.status(401).json({message : "Unathorized user"})
       }

@@ -36,7 +36,7 @@ router.post("/reset-password" ,
      updatePassword);
 
 //Upload profile pic  
-router.post("/upload-avatar" , upload.single("avatar") , uploadProfile);
+router.post("/upload-avatar/:userId" , upload.single("avatar") , uploadProfile);
 
 //Get user profile 
 
