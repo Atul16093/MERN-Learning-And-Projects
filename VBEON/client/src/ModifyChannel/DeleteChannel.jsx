@@ -50,7 +50,7 @@ const handleDeleteChannel = async()=>{
          </div>
          <div className="popup-body">
            <label>Enter Name for confirmation</label>
-           <input  ref={channelNameRef} className="in" type="text" placeholder="Enter channel name here " />
+           <input onKeyDown={(e)=>{ if (e.key === "Enter"){handleDeleteChannel()}}}  ref={channelNameRef} className="in" type="text" placeholder="Enter channel name here " />
            <button onClick={()=>{handleDeleteChannel();}} className="update-btn bt">Delete Channel</button>
          </div>
        </div>

@@ -445,7 +445,7 @@ const Hero = () => {
           </div>
           {userPopup ? (
             <div className="user-details">
-              <ProfilePopup
+              <ProfilePopup 
                 profileState={handleProfileClosing}
                 sendToChild={serverData}
               />{" "}
