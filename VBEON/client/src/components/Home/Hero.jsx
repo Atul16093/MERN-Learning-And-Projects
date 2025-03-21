@@ -30,6 +30,7 @@ import { Switch } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
+import ShowMember from "../Members/ShowMember.jsx";
 const Hero = () => {
   const [isHidden, setIsHidden] = useState(false);
   const [channels, setChannels] = useState([]);
@@ -277,6 +278,13 @@ const Hero = () => {
 
      }
    }
+   const [memberStatus , setMemberStatus ] = useState(false);
+   const handleServerShow = (data)=>{
+     setMemberStatus(data);
+   }
+   const handleChildData = ()=>{
+      setMemberStatus(!memberStatus);
+   }   
   return (
     <>
       <div className="dashboard">
@@ -365,6 +373,7 @@ const Hero = () => {
               </div>
               {serverOptionsPopup ? (
                 <ServerOptions
+                  sendToHeroByMember={handleServerShow}
                   sendToHeroForDelete={handleDeleteStatus}
                   isClose={handleIsClose}
                   sendSelectedServer={selectedServer}
@@ -469,6 +478,7 @@ const Hero = () => {
 
         {/* MAIN CONTENT (Chat) */}
         <main className="main">
+           {memberStatus && <ShowMember sendToHeroByMember = {handleChildData} sendToMember = {selectedServer}/>}
           {privatePopup ? (
             <MemberSelector
               sendToChild={updatedChannelData}

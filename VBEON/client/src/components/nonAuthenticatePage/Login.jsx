@@ -132,7 +132,7 @@ const Login = () => {
           toast.success("Login Success...");
           setTimeout(()=>{
             navigate("/home");
-          },2000)
+          },1000)
         } catch (err) {
           console.log("Error in Login function ", err);
           let errorMsg =
