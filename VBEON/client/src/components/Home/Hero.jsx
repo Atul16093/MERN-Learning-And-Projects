@@ -284,7 +284,9 @@ const Hero = () => {
    }
    const handleChildData = ()=>{
       setMemberStatus(!memberStatus);
-   }   
+   }
+   console.log("Selected by panda " , serverData);
+   
   return (
     <>
       <div className="dashboard">
@@ -533,7 +535,7 @@ const Hero = () => {
                 <h2># {selectedChannel.channelname}</h2>
                 <div  style={{marginRight : "12px",display : "flex", gap : "15px"}}>
                 <span onClick={handleDeleteChannelPopup}><RemoveCircleIcon/></span>
-                <span onClick={handleAddMemberPopup}>{selectedChannel.private && <PersonAddIcon/> }</span>
+                <span onClick={handleAddMemberPopup}>{selectedChannel.private  && <PersonAddIcon/> }</span>
                 </div>
               </div>
 
