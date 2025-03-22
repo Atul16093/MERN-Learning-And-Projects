@@ -48,7 +48,7 @@ export const joinServer = async (request , response , next)=>{
         let inviteStatus = await Invite.findOne({code : inviteCode});    
         
         if(!inviteStatus){
-            return response.status(400).json({message : "Invalid Invite link"})
+            return response.status(400).json({message : "Invalid Invite Code...!"})
         }
 
         //get the server id 

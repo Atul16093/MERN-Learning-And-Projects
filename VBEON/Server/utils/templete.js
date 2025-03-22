@@ -47,9 +47,9 @@ export default class Templete {
 </head>
 <body>
     <div class="container">
-    <h2>OTP Verification</h2>
+    <h2>OTP Verification FOR PASSWORD RESET</h2>
     <p>Dear <strong>${data.name}</strong>,</p>
-    <p>Your One-Time Password (OTP) for verification on <strong>${data.appName}</strong> is:</p>
+    <p>Your One-Time Password (OTP) for verification on <strong>${data.appName}</strong> for password updation is:</p>
     <p class="otp-code">${data.OTP}</p>
     <p>Please enter this OTP to complete your verification. Do not share it with anyone.</p>
     <p class="footer">If you did not request this, please ignore this email.</p>
