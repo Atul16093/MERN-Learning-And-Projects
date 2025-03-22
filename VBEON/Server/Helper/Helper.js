@@ -2,8 +2,8 @@ import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 dotenv.config();
 export default class Helper{
-
     async sendMail(data, template){
+        try{
     // create reusable transporter object using the default SMTP transport
        const sender = nodemailer.createTransport({
         port : 465,
@@ -29,6 +29,9 @@ export default class Helper{
                 console.log(info);
             }
         });
+    }catch(err){
+        console.log(err);     
+    }
     }
     generateOtp(limit) {
         let characters = "0123456789";
