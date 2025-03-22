@@ -14,22 +14,22 @@ import InvitePopup from "../InviteSection/InvitePopup.jsx";
 import ProfilePopup from "../Profile/ProfilePopup.jsx";
 import ServerSettingsPopup from "../ServerSetting/ServerSettingsPopup.jsx";
 import MemberSelector from "../PrivateChannel/MemberSelector.jsx";
-import SecurityOutlinedIcon from '@mui/icons-material/SecurityOutlined';
+import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
 import EmojiPicker from "emoji-picker-react";
-import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
+import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import EmojiEmotionsOutlinedIcon from "@mui/icons-material/EmojiEmotionsOutlined";
 // import GifOutlinedIcon from '@mui/icons-material/GifOutlined';
-import AttachFileIcon from '@mui/icons-material/AttachFile';
+import AttachFileIcon from "@mui/icons-material/AttachFile";
 import FileComponent from "../AttachFile/FileComponent.jsx";
-import PublicOutlinedIcon from '@mui/icons-material/PublicOutlined';
-import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import PublicOutlinedIcon from "@mui/icons-material/PublicOutlined";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import DeleteChannel from "../../ModifyChannel/DeleteChannel.jsx";
 import { useNavigate } from "react-router-dom";
 import AddingMember from "../PrivateChannel/AddingMember.jsx";
 import { Switch } from "@mui/material";
-import AddIcon from '@mui/icons-material/Add';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import DarkModeIcon from '@mui/icons-material/DarkMode';
+import AddIcon from "@mui/icons-material/Add";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
 import ShowMember from "../Members/ShowMember.jsx";
 const Hero = () => {
   const [isHidden, setIsHidden] = useState(false);
@@ -48,7 +48,7 @@ const Hero = () => {
   const [serverOptionsPopup, setServerOptionsPopup] = useState(false);
   const [deleteStatus, setDeleteStatus] = useState();
   const [updatedChannelData, setUpdatedChannelData] = useState([]);
-  const [deleteChannel , setDeleteChannel] = useState(false);
+  const [deleteChannel, setDeleteChannel] = useState(false);
   //It's for invite popup
   const [popupStatus, setPopupStatus] = useState(false);
   //Handle data from child
@@ -135,9 +135,11 @@ const Hero = () => {
       sender: { _id: user_id, username: serverData.user.username },
       content: newMessageRef.current.value,
       channelId: selectedChannel._id,
+      timestamp: new Date().toISOString(),
     };
 
     socket.emit("sendMessage", messageData);
+
     setMessages((prevMessages) => [...prevMessages, messageData]);
     newMessageRef.current.value = "";
   };
@@ -234,59 +236,62 @@ const Hero = () => {
   const handleEmojiSelect = (emoji) => {
     newMessageRef.current.value += emoji.emoji;
   };
-  const [showFile , setShowFile] = useState(false);
-  const handleAttachFile = ()=>{
+  const [showFile, setShowFile] = useState(false);
+  const handleAttachFile = () => {
     setShowFile(!showFile);
-  }
-  const handleAttachFalse = (data)=>{
-    setShowFile(data)
-  }
+  };
+  const handleAttachFalse = (data) => {
+    setShowFile(data);
+  };
 
-  const handleDeleteChannelPopup = ()=>{
-     setDeleteChannel(!deleteChannel);
-  }
-  const handleDeleteChannelProps = async(data)=>{
-    setDeleteChannel(data)
-    try{
-      let res = await axios.get(`${api.GET_CHANNEL}${selectedChannel.serverId}`, {
-        withCredentials: true,
-      });
+  const handleDeleteChannelPopup = () => {
+    setDeleteChannel(!deleteChannel);
+  };
+  const handleDeleteChannelProps = async (data) => {
+    setDeleteChannel(data);
+    try {
+      let res = await axios.get(
+        `${api.GET_CHANNEL}${selectedChannel.serverId}`,
+        {
+          withCredentials: true,
+        }
+      );
       setUpdatedChannelData(res.data.channelInfo);
       setChannels(
         Array.isArray(res.data.channelInfo) ? res.data.channelInfo : []
       );
-    }catch(err){
+    } catch (err) {
       console.log("Error fetching channels:", err);
       setChannels([]);
     }
-  } 
+  };
   console.log(channels);
-   console.log(selectedChannel);
-   const [memberPopup , setMemberPopup] = useState(false);
-   const handleAddMemberPopup = ()=>{
-      setMemberPopup(!memberPopup);
-   }
-   const handleClosingMemberData = (data)=>{
-       setMemberPopup(data)
-   }
-   const [text , setText] = useState("DarkMode");
-   const handleText = ()=>{
-     if(text == "Dark Mode"){
+  console.log(selectedChannel);
+  const [memberPopup, setMemberPopup] = useState(false);
+  const handleAddMemberPopup = () => {
+    setMemberPopup(!memberPopup);
+  };
+  const handleClosingMemberData = (data) => {
+    setMemberPopup(data);
+  };
+  const [text, setText] = useState("DarkMode");
+  const handleText = () => {
+    if (text == "Dark Mode") {
       setText("Light Mode");
-    }else if( text == "Light Mode"){
-       setText("Dark Mode");
-
-     }
-   }
-   const [memberStatus , setMemberStatus ] = useState(false);
-   const handleServerShow = (data)=>{
-     setMemberStatus(data);
-   }
-   const handleChildData = ()=>{
-      setMemberStatus(!memberStatus);
-   }
-   console.log("Selected by panda " , serverData);
-   
+    } else if (text == "Light Mode") {
+      setText("Dark Mode");
+    }
+  };
+  const [memberStatus, setMemberStatus] = useState(false);
+  const handleServerShow = (data) => {
+    setMemberStatus(data);
+  };
+  const handleChildData = () => {
+    setMemberStatus(!memberStatus);
+  };
+  console.log("Selected by panda ", serverData);
+  console.log("It's your message " , messages);
+  
   return (
     <>
       <div className="dashboard">
@@ -326,9 +331,14 @@ const Hero = () => {
         <aside className={isHidden ? "minSidebar" : "sidebar"}>
           <div className="sidebar-header">
             <h1 className="logo">VBEON</h1>
-            <span   onClick={() => {document.body.classList.toggle("light-mode"); handleText()}}>
- <DarkModeIcon/>
-</span>
+            <span
+              onClick={() => {
+                document.body.classList.toggle("light-mode");
+                handleText();
+              }}
+            >
+              <DarkModeIcon />
+            </span>
             <h1>
               <img
                 className="minimize"
@@ -354,7 +364,9 @@ const Hero = () => {
                       ""
                     ) : (
                       // <img className="plus" src={Plus} alt="" />
-                      <span className="plus"><AddIcon/></span>
+                      <span className="plus">
+                        <AddIcon />
+                      </span>
                     )}
                   </button>
                 ) : (
@@ -366,11 +378,7 @@ const Hero = () => {
                   style={{ outline: "none", marginLeft: "1px", width: "40px" }}
                 >
                   {" "}
-                  {selectedServer == null ? (
-                    ""
-                  ) : (
-                   <MoreVertIcon/>
-                  )}
+                  {selectedServer == null ? "" : <MoreVertIcon />}
                 </span>
               </div>
               {serverOptionsPopup ? (
@@ -397,9 +405,8 @@ const Hero = () => {
                         }}
                       >
                         {" "}
-                        <PublicOutlinedIcon style={{width : "15px"}}/> {channel.type == "text"
-                          ?  `${channel.channelname}`
-                          : ""}
+                        <PublicOutlinedIcon style={{ width: "15px" }} />{" "}
+                        {channel.type == "text" ? `${channel.channelname}` : ""}
                       </li>
                     )
                   );
@@ -415,7 +422,8 @@ const Hero = () => {
                         onClick={() => handleChannelClick(channel)}
                       >
                         {" "}
-                        <SecurityOutlinedIcon style={{width : "15px"}}/> {channel.channelname}
+                        <SecurityOutlinedIcon style={{ width: "15px" }} />{" "}
+                        {channel.channelname}
                       </li>
                     )
                   );
@@ -445,7 +453,7 @@ const Hero = () => {
           </div>
           {userPopup ? (
             <div className="user-details">
-              <ProfilePopup 
+              <ProfilePopup
                 profileState={handleProfileClosing}
                 sendToChild={serverData}
               />{" "}
@@ -480,7 +488,12 @@ const Hero = () => {
 
         {/* MAIN CONTENT (Chat) */}
         <main className="main">
-           {memberStatus && <ShowMember sendToHeroByMember = {handleChildData} sendToMember = {selectedServer}/>}
+          {memberStatus && (
+            <ShowMember
+              sendToHeroByMember={handleChildData}
+              sendToMember={selectedServer}
+            />
+          )}
           {privatePopup ? (
             <MemberSelector
               sendToChild={updatedChannelData}
@@ -528,14 +541,32 @@ const Hero = () => {
           )}
           {selectedChannel ? (
             <>
-            {deleteChannel && <DeleteChannel sendToChild = {selectedChannel._id} sendByDeleteChannel={handleDeleteChannelProps}/> }
-            {memberPopup && <AddingMember currentChannel={selectedChannel} sendToChildId={selectedChannel._id} sendToChildServerId={selectedChannel.serverId} closingAddingMemberPopup={handleClosingMemberData}/>}
+              {deleteChannel && (
+                <DeleteChannel
+                  sendToChild={selectedChannel._id}
+                  sendByDeleteChannel={handleDeleteChannelProps}
+                />
+              )}
+              {memberPopup && (
+                <AddingMember
+                  currentChannel={selectedChannel}
+                  sendToChildId={selectedChannel._id}
+                  sendToChildServerId={selectedChannel.serverId}
+                  closingAddingMemberPopup={handleClosingMemberData}
+                />
+              )}
               {/* Channel Header */}
               <div className="channel-header">
                 <h2># {selectedChannel.channelname}</h2>
-                <div  style={{marginRight : "12px",display : "flex", gap : "15px"}}>
-                <span onClick={handleDeleteChannelPopup}><RemoveCircleIcon/></span>
-                <span onClick={handleAddMemberPopup}>{selectedChannel.private  && <PersonAddIcon/> }</span>
+                <div
+                  style={{ marginRight: "12px", display: "flex", gap: "15px" }}
+                >
+                  <span onClick={handleDeleteChannelPopup}>
+                    <RemoveCircleIcon />
+                  </span>
+                  <span onClick={handleAddMemberPopup}>
+                    {selectedChannel.private && <PersonAddIcon />}
+                  </span>
                 </div>
               </div>
 
@@ -544,6 +575,16 @@ const Hero = () => {
                 <div className="messages" ref={chatContainerRef}>
                   {messages.map((msg, index) => {
                     const isSentByUser = msg.sender._id === user_id;
+
+                    // Convert timestamp to readable format
+                    const formattedTime = new Date(
+                      msg.createdAt
+                    ).toLocaleString("en-US", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: true, // Show AM/PM format
+                    });
+
                     return (
                       <div
                         key={index}
@@ -556,7 +597,20 @@ const Hero = () => {
                         </p>
                         {/* Message Bubble */}
                         <div className="message-bubble">
-                          <span className="message-text ">{msg.content}</span>
+                          <span className="message-text">{msg.content}</span>
+                          {/* Timestamp Display */}
+                          {/* <span >{formattedTime}</span> */}
+                          <small className="message-time">
+                            {/* It's a iife function */}
+                            {(() => {
+                              const timeParts = new Date(msg.timestamp)
+                                .toLocaleTimeString()
+                                .split(":");
+                              return `${timeParts[0]}:${timeParts[1]} ${
+                                timeParts[2].split(" ")[1]
+                              }`;
+                            })()}
+                          </small>
                         </div>
                       </div>
                     );
@@ -587,19 +641,29 @@ const Hero = () => {
                     type="text"
                     placeholder="Message..."
                   />
-                      {/* Sending the file  */}
-                  {showFile && <FileComponent isTrue={true} attachFalse={handleAttachFalse}/>}
-                  <button onClick={handleAttachFile} style={{
+                  {/* Sending the file  */}
+                  {showFile && (
+                    <FileComponent
+                      isTrue={true}
+                      attachFalse={handleAttachFalse}
+                    />
+                  )}
+                  <button
+                    onClick={handleAttachFile}
+                    style={{
                       outline: "none",
                       border: "none",
                       background: "transparent",
                       width: "45px",
-                    }}>
-                  {/* Emoji Button */}
-                    <AttachFileIcon/>
+                    }}
+                  >
+                    {/* Emoji Button */}
+                    <AttachFileIcon />
                   </button>
                   <button
-                    onClick={() => {setShowPicker((prev) => !prev); }}
+                    onClick={() => {
+                      setShowPicker((prev) => !prev);
+                    }}
                     style={{
                       outline: "none",
                       border: "none",
@@ -617,13 +681,12 @@ const Hero = () => {
             </>
           ) : (
             <div className="d-flex justify-content-center align-items-center vh-100">
-  <p className="select-channel-message">
-    Welcome {serverData.user.username} ☺️,<br/> Select a channel to start chatting
-  </p>
-</div>
-
+              <p className="select-channel-message">
+                Welcome {serverData.user.username} ☺️,
+                <br /> Select a channel to start chatting
+              </p>
+            </div>
           )}
-
         </main>
       </div>
     </>

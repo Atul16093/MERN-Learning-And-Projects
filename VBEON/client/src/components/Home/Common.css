@@ -134,4 +134,54 @@ body {
       font-size: 15px;
     }
   }
+
+  
+  .about-container {
+    padding: 20px;
+    max-width: 900px;
+    margin: auto;
+    text-align: center;
+    color: #fff;
+  }
+  
+  .about-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin-top: 20px;
+  }
+  
+  .about-box {
+    background: #222;
+    padding: 15px;
+    border-radius: 8px;
+    width: 45%;
+    margin: 10px 0;
+    text-align: left;
+  }
+  
+  .documentation-section {
+    margin-top: 30px;
+    padding: 15px;
+    background: #1a1a1a;
+    border-radius: 8px;
+  }
+  
+  .docs-button {
+    padding: 10px;
+    background: #007bff;
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .docs-content {
+    margin-top: 15px;
+    text-align: left;
+    background: #2a2a2a;
+    padding: 15px;
+    border-radius: 8px;
+  }
   

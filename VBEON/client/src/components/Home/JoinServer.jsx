@@ -2,7 +2,7 @@ import { useState } from "react";
 import "./JoinServer.css";
 import axios from "axios";
 import api from "../../api";
-
+import { ToastContainer, toast } from "react-toastify";
 const JoinServer = ({ closeStatus , popUpClose}) => {
     const [inviteLink, setInviteLink] = useState("");
     const [close , setClose]    =  useState();
@@ -19,8 +19,12 @@ const JoinServer = ({ closeStatus , popUpClose}) => {
         const code = inviteLink;
         const res = await axios.post(`${api.JOIN_SERVER}${code}` ,{}, {withCredentials : true})
         console.log(res);
-        closePopup();
+        toast.success("Server joined successfully");
+        setTimeout(() => {
+            closePopup(); 
+        }, 1500);
         }catch(error){
+            toast.error(error.response.data.message || "Invalid Server code...");
             console.log("Error in handle submit " , error);
             
         }
@@ -33,7 +37,8 @@ const JoinServer = ({ closeStatus , popUpClose}) => {
         setClose(false);
         popUpClose()
     }
-    return (
+    return <>
+        <ToastContainer/>
         <div className="modal-overlay">
             <div className="modal-container">
                 <button className="close-btn" style={{outline : "none", width : "45px"}} onClick={closePopup}>X</button>
@@ -80,7 +85,7 @@ const JoinServer = ({ closeStatus , popUpClose}) => {
                 </form>
             </div>
         </div>
-    );
+     </>
 };
 
 export default JoinServer;

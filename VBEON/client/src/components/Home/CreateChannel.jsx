@@ -17,9 +17,8 @@ const CreateChannel = ({sendDataToParent , serverId , ChannelToParent , ChildToP
         withCredentials : true //it ensure cookies are send and the creditaial true help us to get the cookies from the browser storage
        });
        //For live time re-rendering I did this thing,
-       ChannelToParent(serverId);
-       
       //  toast.success('Channel Created Successfully...!');
+         ChannelToParent(serverId);
         }catch(err){
           // toast.error("Channel already exist...!")
           console.log("Error in handleSubmit function",err);
