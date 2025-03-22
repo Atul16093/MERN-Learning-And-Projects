@@ -365,6 +365,7 @@
 .received .message-bubble {
   background: linear-gradient(135deg, #ebeaea, #ffffff);
     color: rgb(0, 0, 0);
+    max-width: 650px;
     border-radius: 16px;
     padding: 14px;
     font-size: 14px;
@@ -372,7 +373,7 @@
 /* Message Bubble */
 .message-bubble {
   padding: 10px 15px;
-  max-width: 60%;
+  max-width: 650px;
   word-wrap: break-word;
   font-size: 14px;
 }
@@ -600,4 +601,19 @@
 
 .light-mode ::-webkit-scrollbar-thumb:hover {
   background: #469efc; /* Soft Blue Hover */
+}
+.light-mode .para{
+  font-size: 16px;
+  color: black;
+  font-weight: bold;
+}
+.empty-message {
+  text-align: center;
+  font-size: 1.5rem;
+  color: #ffffff;
+  opacity: 0.8;
+  position: absolute;
+  top: 50%;
+  left: 62%;
+  transform: translate(-50%, -50%);
 }

@@ -571,6 +571,9 @@ const Hero = () => {
               </div>
 
               {/* Chat Area */}
+             {messages.length == 0 ? <div className="empty-message">
+          <p className="para" style={{fontSize : "16px"}}>No messages yet! Start the conversation 🎉</p>
+        </div> : ""}
               <div className="chat-area">
                 <div className="messages" ref={chatContainerRef}>
                   {messages.map((msg, index) => {

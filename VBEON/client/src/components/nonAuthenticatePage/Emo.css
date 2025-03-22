@@ -46,7 +46,15 @@
     margin: 0;
   }
   
-
+  .info{
+    background: linear-gradient(to right, #a855f7, #3b82f6);
+    border: none;
+    border-radius: 20px;
+    color: #ffffff;
+    padding: 10px 20px;
+    font-weight: bold;
+    transition: opacity 0.3s ease-in-out;
+  }
   .signup-btn {
     background: linear-gradient(to right, #a855f7, #3b82f6);
     border: none;

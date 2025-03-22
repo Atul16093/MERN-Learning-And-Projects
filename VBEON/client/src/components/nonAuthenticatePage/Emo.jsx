@@ -5,6 +5,7 @@ import api from "../../api.jsx";
 import Cookies from "js-cookie";
 import {toast, ToastContainer} from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import EyeIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 const Emo = ()=>{
   //Count the step for tracking the user action
     const [step , setStep] = useState(0);
@@ -92,7 +93,13 @@ const Emo = ()=>{
       }
       return "";
     }
-    
+    const [view , setView] = useState("password");
+    const handleView = ()=>{
+      if(view == "password")
+        setView("text")
+      else
+        setView("password");
+    }
     //This function will run after the each response of user 
     const sendMessage = ()=>{
         let mess = userInputRef.current.value;
@@ -223,11 +230,13 @@ const Emo = ()=>{
         const landing = ()=>{
           navigate("/")
         }
+        console.log(step);
     return <>
      <ToastContainer/>
      <div className="glass-bg">
         <header className="glass-header">
           <h1 onClick={landing} className="signup-btn">Emo</h1>
+          <h1 className="info" style={{fontWeight : "bold"}}>Create Your Account</h1>
           <button onClick={login} className="signup-btn">Login</button>
         </header>
       <div className="glass-container">
@@ -239,11 +248,12 @@ const Emo = ()=>{
 
          </div>
         <div className="message-input">
-          <input  onKeyDown={(e)=>{
+          <input type = {step == 4 ? view : "text"} onKeyDown={(e)=>{
             if(e.key === "Enter"){
                 sendMessage();
             }
-          }} ref={userInputRef} type="text" placeholder="Message..." />
+          }} ref={userInputRef}  placeholder="Message..." />
+          {step == 4 && <EyeIcon onClick = {()=>{handleView()}} style={{marginRight : "12px"}}/>}
           <button onClick={()=>{sendMessage()}} className="send-btn">&#x27A4;</button>
         </div>
       </div>

@@ -8,6 +8,7 @@ import { toast, ToastContainer } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../Redux/UserSlice.jsx";
 import ResetPassword from "../ResetPassword/ResetPassword.jsx";
+import EyeIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 const Login = () => {
   const dispatch = useDispatch();
 
@@ -153,7 +154,13 @@ const Login = () => {
   const landing = ()=>{
     navigate("/")
   }
-  console.log(userData);
+  const [view , setView] = useState("password");
+    const handleView = ()=>{
+      if(view == "password")
+        setView("text")
+      else
+        setView("password");
+    }
   
   return <>
       <ToastContainer />
@@ -161,6 +168,7 @@ const Login = () => {
       <div className="glass-bg">
         <header className="glass-header">
           <h1 onClick={landing} className="signup-btn">Emo</h1>
+          <h1 className="info" style={{fontWeight : "bold"}}>Login From Here </h1>
           <button onClick={signUp} className="signup-btn">
             SignUp
           </button>
@@ -188,9 +196,10 @@ const Login = () => {
                 }
               }}
               ref={userInputRef}
-              type="text"
+              type = {step == 1 ? view : "text"}
               placeholder="Message..."
             />
+            {step == 1 && <EyeIcon onClick = {()=>{handleView()}} style={{marginRight : "12px"}}/>}
             <button
               onClick={() => {
                 sendMessage();
