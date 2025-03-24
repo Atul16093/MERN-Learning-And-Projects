@@ -31,6 +31,7 @@ import AddIcon from "@mui/icons-material/Add";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import ShowMember from "../Members/ShowMember.jsx";
+import VideoCall from '@mui/icons-material/Duo';
 const Hero = () => {
   const [isHidden, setIsHidden] = useState(false);
   const [channels, setChannels] = useState([]);
@@ -291,6 +292,12 @@ const Hero = () => {
   };
   console.log("Selected by panda ", serverData);
   console.log("It's your message " , messages);
+  const navigate = useNavigate();
+  const handleVideoClick = (id)=>{
+    console.log("hii",id);
+    
+     navigate("/group-chat" , {state : id});
+  }
   
   return (
     <>
@@ -395,18 +402,7 @@ const Hero = () => {
                 ""
               )}
               <ul>
-                {channels.map((channel, index) => {
-                  return (
-                    !channel.private && (
-                      <li
-                        key={index}
-                        onClick={() => {
-                          handleChannelClick(channel);
-                        }}
-                      >
-                        {" "}
-                        <PublicOutlinedIcon style={{ width: "15px" }} />{" "}
-                        {channel.type == "text" ? `${channel.channelname}` : ""}
+                {channels.map((channel, index) => { return (!channel.private && channel.type == "text" && ( <li  key={index}  onClick={() => {  handleChannelClick(channel);}}> <PublicOutlinedIcon style={{ width: "15px" }} />{channel.channelname}
                       </li>
                     )
                   );
@@ -428,6 +424,23 @@ const Hero = () => {
                     )
                   );
                 })}
+                <span className="text-channel">Private Group Call</span>
+                {channels.map((channel, index) => {
+                  return (
+                    channel.private &&
+                    channel.type === "voice" &&
+                    channel.allowedMembers.includes(serverData.user.id) && (
+                      <li
+                        key={index}
+                        onClick={() => handleChannelClick(channel)}
+                      >
+                        {" "}
+                        <SecurityOutlinedIcon style={{ width: "15px" }} />{" "}
+                        {channel.channelname}
+                      </li>
+                    )
+                  );
+                })}
               </ul>
             </div>
 
@@ -436,15 +449,15 @@ const Hero = () => {
               <ul>
                 {channels.map((channel, index) => {
                   return (
-                    <li
+                    channel.type == "voice" && channel.private == false &&
+                    <li 
                       key={index}
+                      
                       onClick={() => {
                         handleChannelClick(channel);
                       }}
                     >
-                      {channel.type == "voice"
-                        ? `🐼 ${channel.channelname}`
-                        : ""}{" "}
+                      🐼 {channel.channelname}
                     </li>
                   );
                 })}
@@ -561,6 +574,7 @@ const Hero = () => {
                 <div
                   style={{ marginRight: "12px", display: "flex", gap: "15px" }}
                 >
+                  {selectedChannel.type == "voice" && <span onClick={()=>{handleVideoClick(selectedChannel._id)}}><VideoCall/></span>}
                   <span onClick={handleDeleteChannelPopup}>
                     <RemoveCircleIcon />
                   </span>
@@ -580,14 +594,7 @@ const Hero = () => {
                     const isSentByUser = msg.sender._id === user_id;
 
                     // Convert timestamp to readable format
-                    const formattedTime = new Date(
-                      msg.createdAt
-                    ).toLocaleString("en-US", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      hour12: true, // Show AM/PM format
-                    });
-
+                   
                     return (
                       <div
                         key={index}

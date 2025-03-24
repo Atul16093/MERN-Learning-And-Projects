@@ -13,7 +13,7 @@ const CreateChannel = ({sendDataToParent , serverId , ChannelToParent , ChildToP
 
     const handleSubmit = async()=>{
         try{        
-        const res = await axios.post(`${api.CREATE_CHANNEL}/${serverId}/create` , {channelname : channelNameRef.current.value , type : textChannelRef.current.value},{
+        const res = await axios.post(`${api.CREATE_CHANNEL}/${serverId}/create` , {channelname : channelNameRef.current.value , type : voiceChannelref.current.value || textChannelRef.current.value},{
         withCredentials : true //it ensure cookies are send and the creditaial true help us to get the cookies from the browser storage
        });
        //For live time re-rendering I did this thing,
@@ -35,7 +35,7 @@ const CreateChannel = ({sendDataToParent , serverId , ChannelToParent , ChildToP
   };
   const handleSubmitForPrivate = async()=>{
     try{
-      const res = await axios.post(`${api.CREATE_CHANNEL}/${serverId}/create`, {channelname : channelNameRef.current.value, type : textChannelRef.current.value , isPrivate : true} , {withCredentials : true});
+      const res = await axios.post(`${api.CREATE_CHANNEL}/${serverId}/create`, {channelname : channelNameRef.current.value, type :voiceChannelref.current.value || textChannelRef.current.value , isPrivate : true} , {withCredentials : true});
       
       console.log(res.data);
       setErrorMessage("");
