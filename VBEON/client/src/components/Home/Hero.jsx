@@ -294,8 +294,7 @@ const Hero = () => {
   console.log("It's your message " , messages);
   const navigate = useNavigate();
   const handleVideoClick = (id)=>{
-    console.log("hii",id);
-    
+   
      navigate("/group-chat" , {state : id});
   }
   
@@ -424,23 +423,6 @@ const Hero = () => {
                     )
                   );
                 })}
-                <span className="text-channel">Private Group Call</span>
-                {channels.map((channel, index) => {
-                  return (
-                    channel.private &&
-                    channel.type === "voice" &&
-                    channel.allowedMembers.includes(serverData.user.id) && (
-                      <li
-                        key={index}
-                        onClick={() => handleChannelClick(channel)}
-                      >
-                        {" "}
-                        <SecurityOutlinedIcon style={{ width: "15px" }} />{" "}
-                        {channel.channelname}
-                      </li>
-                    )
-                  );
-                })}
               </ul>
             </div>
 
@@ -456,9 +438,26 @@ const Hero = () => {
                       onClick={() => {
                         handleChannelClick(channel);
                       }}
-                    >
+                      >
                       🐼 {channel.channelname}
                     </li>
+                  );
+                })}
+                <span className="text-channel">Private Group Call</span>
+                {channels.map((channel, index) => {
+                  return (
+                    channel.private &&
+                    channel.type === "voice" &&
+                    channel.allowedMembers.includes(serverData.user.id) && (
+                      <li
+                        key={index}
+                        onClick={() => handleChannelClick(channel)}
+                      >
+                        {" "}
+                        <SecurityOutlinedIcon style={{ width: "15px" }} />{" "}
+                        {channel.channelname}
+                      </li>
+                    )
                   );
                 })}
               </ul>
